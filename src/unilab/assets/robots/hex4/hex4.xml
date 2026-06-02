@@ -1,0 +1,428 @@
+<mujoco model="hex4">
+  <compiler angle="radian" meshdir="assets" autolimits="true"/>
+
+  <option cone="elliptic" impratio="100" ccd_iterations="500" timestep="0.001"/>
+
+  <default>
+    <default class="visual">
+      <geom type="mesh" contype="0" conaffinity="0" mass="0" group="1"/>
+    </default>
+    <default class="collision">
+      <geom type="mesh" contype="1" conaffinity="1" group="3" friction="0.9 0.1 0.1"/>
+    </default>
+  </default>
+
+  <asset>
+    <mesh name="base_link" file="base_link.STL"/>
+    <mesh name="RF_link0" file="RF_link0.STL"/>
+    <mesh name="RF_link1" file="RF_link1.STL"/>
+    <mesh name="RF_link2" file="RF_link2.STL"/>
+    <mesh name="RF_link3" file="RF_link3.STL"/>
+    <mesh name="RF_foot"  file="RF_foot.STL"/>
+    <mesh name="RM_link0" file="RM_link0.STL"/>
+    <mesh name="RM_link1" file="RM_link1.STL"/>
+    <mesh name="RM_link2" file="RM_link2.STL"/>
+    <mesh name="RM_link3" file="RM_link3.STL"/>
+    <mesh name="RM_foot"  file="RM_foot.STL"/>
+    <mesh name="RB_link0" file="RB_link0.STL"/>
+    <mesh name="RB_link1" file="RB_link1.STL"/>
+    <mesh name="RB_link2" file="RB_link2.STL"/>
+    <mesh name="RB_link3" file="RB_link3.STL"/>
+    <mesh name="RB_foot"  file="RB_foot.STL"/>
+    <mesh name="LF_link0" file="LF_link0.STL"/>
+    <mesh name="LF_link1" file="LF_link1.STL"/>
+    <mesh name="LF_link2" file="LF_link2.STL"/>
+    <mesh name="LF_link3" file="LF_link3.STL"/>
+    <mesh name="LF_foot"  file="LF_foot.STL"/>
+    <mesh name="LM_link0" file="LM_link0.STL"/>
+    <mesh name="LM_link1" file="LM_link1.STL"/>
+    <mesh name="LM_link2" file="LM_link2.STL"/>
+    <mesh name="LM_link3" file="LM_link3.STL"/>
+    <mesh name="LM_foot"  file="LM_foot.STL"/>
+    <mesh name="LB_link0" file="LB_link0.STL"/>
+    <mesh name="LB_link1" file="LB_link1.STL"/>
+    <mesh name="LB_link2" file="LB_link2.STL"/>
+    <mesh name="LB_link3" file="LB_link3.STL"/>
+    <mesh name="LB_foot"  file="LB_foot.STL"/>
+  </asset>
+
+  <worldbody>
+    <!-- <light pos="0 0 1.5" dir="0 0 -1" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
+    <geom type="plane" size="5 5 0.1" rgba="0.2 0.2 0.2 1"/> -->
+
+    <body name="base_link" pos="0 0 0.5">
+      <freejoint name="base_free"/>
+      <!-- 添加 IMU 所需的 site -->
+      <site name="imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <!-- fullinertia: ixx iyy izz ixy ixz iyz -->
+      <inertial pos="-0.11306 1.6087E-07 0.015131" mass="18.658"
+                fullinertia="0.2099 0.96028 1.1173 8.2415E-07 -0.0011811 8.8359E-08"/>
+      <geom class="visual" mesh="base_link" rgba="1 1 1 1"/>
+      <!-- <geom class="collision" mesh="base_link"/> -->
+
+      <!-- RF (Right Front) Leg -->
+      <body name="RF_link0" pos="0.3 -0.1 0" euler="0 0 -1.5708">
+        <joint name="RF_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 -3.8858E-16 0.0018937" mass="1.0785"
+                  fullinertia="0.0010572 0.0014046 0.0010857 -4.3198E-19 -1.1802E-18 -2.2555E-19"/>
+        <geom class="visual" mesh="RF_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="RF_link0"/>
+
+        <body name="RF_link1" pos="0.05 0 0" euler="1.5708 1.5708 0">
+          <joint name="RF_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.013313 -0.078792 0.12187" mass="1.1898"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.6806E-05 -9.9578E-05 -0.00024246"/>
+          <geom class="visual" mesh="RF_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="RF_link1"/> -->
+
+          <body name="RF_link2" pos="0 -0.10796 0.15296" euler="1.5708 1.5708 0">
+            <joint name="RF_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="5.7607E-07 0.18665 -0.042993" mass="1.2302"
+                      fullinertia="0.002316 0.001494 0.0022028 -2.1887E-08 -1.4162E-09 0.0001734"/>
+            <geom class="visual" mesh="RF_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="RF_link2"/>
+
+            <body name="RF_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="RF_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="8.9473E-09 0.081551 0.0030752" mass="0.3834"
+                        fullinertia="0.0010865 0.00026792 0.001212 -1.4698E-12 -2.5591E-11 -3.7009E-05"/>
+              <geom class="visual" mesh="RF_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="RF_link3"/> -->
+
+              <body name="RF_foot" pos="0 0.35 0" euler="3.1416 0 -1.5708">
+                <inertial pos="0.00464 1.11E-16 -4.04E-16" mass="0.039234"
+                          fullinertia="1.3682E-05 1.1102E-05 1.1102E-05 3.0967E-17 9.554E-18 -7.737E-18"/>
+                <geom class="visual" mesh="RM_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="RM_foot" name="RF_foot_geom"/>
+                <site name="RF_touch_site" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- RM (Right Middle) Leg -->
+      <body name="RM_link0" pos="0 -0.2 0" euler="0 0 -1.5708">
+        <joint name="RM_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 -9.2517E-19 0.0018937" mass="1.0785"
+                  fullinertia="0.0010572 0.0014046 0.0010857 -2.0448E-19 -1.2054E-18 -1.466E-19"/>
+        <geom class="visual" mesh="RM_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="RM_link0"/>
+
+        <body name="RM_link1" pos="0.05 0 0" euler="1.5708 1.5708 0">
+          <joint name="RM_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.013313 -0.078792 0.12187" mass="1.1898"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.6806E-05 -9.9578E-05 -0.00024246"/>
+          <geom class="visual" mesh="RM_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="RM_link1"/> -->
+
+          <body name="RM_link2" pos="0 -0.10796 0.15296" euler="1.5708 1.5708 0">
+            <joint name="RM_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="5.760688E-07 0.186653 -0.042993" mass="1.230156"
+                      fullinertia="0.002316 0.001494 0.0022028 -2.1887E-08 -1.4162E-09 0.0001734"/>
+            <geom class="visual" mesh="RM_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="RM_link2"/>
+
+            <body name="RM_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="RM_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="8.947E-09 0.081551 0.003075" mass="0.383404"
+                        fullinertia="0.0010865 0.00026792 0.001212 -1.4698E-12 -2.5591E-11 -3.7009E-05"/>
+              <geom class="visual" mesh="RM_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="RM_link3"/> -->
+
+              <body name="RM_foot" pos="0 0.35 0" euler="3.1416 0 -1.5708">
+                <inertial pos="0.00464 1.11E-16 -4.04E-16" mass="0.039234"
+                          fullinertia="1.3682E-05 1.1102E-05 1.1102E-05 3.0967E-17 9.554E-18 -7.737E-18"/>
+                <geom class="visual" mesh="RM_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="RM_foot" name="RM_foot_geom"/>
+                <site name="RM_touch_site" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- RB (Right Back) Leg -->
+      <body name="RB_link0" pos="-0.55 -0.1 0" euler="0 0 -1.5708">
+        <joint name="RB_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 0 0.001894" mass="1.07845"
+                  fullinertia="0.0010572 0.0014046 0.0010857 -2.644E-19 -1.068E-18 -1.331E-19"/>
+        <geom class="visual" mesh="RB_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="RB_link0"/>
+
+        <body name="RB_link1" pos="0.05 0 0" euler="1.5708 1.5708 0">
+          <joint name="RB_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.013313 -0.078792 0.12187" mass="1.18978"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.68E-05 -9.95E-05 -0.0002425"/>
+          <geom class="visual" mesh="RB_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="RB_link1"/> -->
+
+          <body name="RB_link2" pos="0 -0.10796 0.15296" euler="1.5708 1.5708 0">
+            <joint name="RB_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="5.7607E-07 0.18665 -0.04299" mass="1.23016"
+                      fullinertia="0.002316 0.001494 0.002203 -2.1887E-08 -1.4162E-09 0.0001734"/>
+            <geom class="visual" mesh="RB_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="RB_link2"/>
+
+            <body name="RB_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="RB_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="8.947E-09 0.08155 -0.003075" mass="0.383405"
+                        fullinertia="0.0010865 0.0002679 0.001212 -1.4698E-12 -2.559E-11 3.701E-05"/>
+              <geom class="visual" mesh="RB_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="RB_link3"/> -->
+
+              <body name="RB_foot" pos="0 0.35 0" euler="3.1416 0 -1.5708">
+                <inertial pos="0.00464 -8.66E-15 -2.11E-15" mass="0.039234"
+                          fullinertia="1.368E-05 1.11E-05 1.11E-05 1.849E-17 4.9E-18 -7.737E-18"/>
+                <geom class="visual" mesh="RB_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="RB_foot" name="RB_foot_geom"/>
+                <site name="RB_touch_site" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- LF (Left Front) Leg -->
+      <body name="LF_link0" pos="0.3 0.1 0" euler="3.1416 0 -1.5708">
+        <joint name="LF_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 -2.775E-16 -0.00189" mass="1.07846"
+                  fullinertia="0.0010572 0.0014046 0.0010857 2.625E-19 7.933E-19 -4.94E-19"/>
+        <geom class="visual" mesh="LF_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="LF_link0"/>
+
+        <body name="LF_link1" pos="0.05 0 0" euler="-1.5708 -1.5708 0">
+          <joint name="LF_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.01354 -0.07879 -0.12187" mass="1.18978"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.608E-05 9.33E-05 0.0002425"/>
+          <geom class="visual" mesh="LF_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="LF_link1"/> -->
+
+          <body name="LF_link2" pos="0 -0.10796 -0.15296" euler="-1.5708 -1.5708 0">
+            <joint name="LF_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="-5.76E-07 0.18665 0.04299" mass="1.23016"
+                      fullinertia="0.002316 0.001494 0.002203 2.1887E-08 -1.4162E-09 -0.0001734"/>
+            <geom class="visual" mesh="LF_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="LF_link2"/>
+
+            <body name="LF_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="LF_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="-8.947E-09 0.08155 -0.003075" mass="0.383405"
+                        fullinertia="0.0010865 0.0002679 0.001212 1.469E-12 -2.559E-11 3.701E-05"/>
+              <geom class="visual" mesh="LF_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="LF_link3"/> -->
+
+              <body name="LF_foot" pos="0 0.35 0" euler="3.14159 0 -1.5708">
+                <inertial pos="0.00464 -1.388E-17 -1.388E-15" mass="0.039234"
+                          fullinertia="1.368E-05 1.11E-05 1.11E-05 -2.91E-18 1.847E-17 -1.43E-17"/>
+                <geom class="visual" mesh="LF_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="LF_foot" name="LF_foot_geom"/>
+                <site name="LF_touch_site" size="0.01" rgba="0 0 0 0"/>
+
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- LM (Left Middle) Leg -->
+      <body name="LM_link0" pos="0 0.2 0" euler="3.1416 0 -1.5708">
+        <joint name="LM_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 -1.89E-16 -0.00189" mass="1.07846"
+                  fullinertia="0.0010572 0.0014046 0.0010857 1.275E-19 8.62E-19 -6.305E-19"/>
+        <geom class="visual" mesh="LM_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="LM_link0"/>
+
+        <body name="LM_link1" pos="0.05 0 0" euler="-1.5708 -1.5708 0">
+          <joint name="LM_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.01354 -0.07879 -0.12187" mass="1.18978"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.608E-05 9.33E-05 0.0002425"/>
+          <geom class="visual" mesh="LM_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="LM_link1"/> -->
+
+          <body name="LM_link2" pos="0 -0.10796 -0.15296" euler="-1.5708 -1.5708 0">
+            <joint name="LM_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="-5.76E-07 0.18665 0.04299" mass="1.23016"
+                      fullinertia="0.002316 0.001494 0.002203 2.1887E-08 -1.4162E-09 -0.0001734"/>
+            <geom class="visual" mesh="LM_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="LM_link2"/>
+
+            <body name="LM_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="LM_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="-8.947E-09 0.08155 -0.003075" mass="0.383405"
+                        fullinertia="0.0010865 0.0002679 0.001212 1.469E-12 -2.559E-11 3.701E-05"/>
+              <geom class="visual" mesh="LM_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="LM_link3"/> -->
+
+              <body name="LM_foot" pos="0 0.35 0" euler="3.1416 0 -1.5708">
+                <inertial pos="0.00464 9.71E-17 -2.53E-16" mass="0.039234"
+                          fullinertia="1.368E-05 1.11E-05 1.11E-05 1.158E-17 -1.265E-17 1.329E-17"/>
+                <geom class="visual" mesh="LM_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="LM_foot" name="LM_foot_geom"/>
+                <site name="LM_touch_site" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- LB (Left Back) Leg -->
+      <body name="LB_link0" pos="-0.55 0.1 0" euler="3.1416 0 -1.5708">
+        <joint name="LB_joint0" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+        <inertial pos="0.028662 -2.775E-16 -0.00189" mass="1.07846"
+                  fullinertia="0.0010572 0.0014046 0.0010857 1.275E-19 8.623E-19 -6.305E-19"/>
+        <geom class="visual" mesh="LB_link0" rgba="0.792 0.819 0.933 1"/>
+        <geom class="collision" mesh="LB_link0"/>
+
+        <body name="LB_link1" pos="0.05 0 0" euler="-1.5708 -1.5708 0">
+          <joint name="LB_joint1" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+          <inertial pos="-0.01354 -0.07879 -0.12187" mass="1.18978"
+                    fullinertia="0.0016823 0.0016742 0.0017439 9.608E-05 9.33E-05 0.0002425"/>
+          <geom class="visual" mesh="LB_link1" rgba="0.792 0.819 0.933 1"/>
+          <!-- <geom class="collision" mesh="LB_link1"/> -->
+
+          <body name="LB_link2" pos="0 -0.10796 -0.15296" euler="-1.5708 -1.5708 0">
+            <joint name="LB_joint2" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+            <inertial pos="-5.76E-07 0.18665 0.04299" mass="1.23016"
+                      fullinertia="0.002316 0.001494 0.002203 2.1887E-08 -1.4162E-09 -0.0001734"/>
+            <geom class="visual" mesh="LB_link2" rgba="0.498 0.498 0.498 1"/>
+            <geom class="collision" mesh="LB_link2"/>
+
+            <body name="LB_link3" pos="0 0.25 0" euler="0 0 0">
+              <joint name="LB_joint3" type="hinge" axis="0 0 1" range="-3.14 3.14" damping="0.1"/>
+              <inertial pos="-8.947E-09 0.08155 -0.003075" mass="0.383405"
+                        fullinertia="0.0010865 0.0002679 0.001212 1.469E-12 -2.559E-11 3.701E-05"/>
+              <geom class="visual" mesh="LB_link3" rgba="0.498 0.498 0.498 1"/>
+              <!-- <geom class="collision" mesh="LB_link3"/> -->
+
+              <body name="LB_foot" pos="0 0.35 0" euler="3.1416 0 -1.5708">
+                <inertial pos="0.00464 9.71E-17 -2.53E-16" mass="0.039234"
+                          fullinertia="1.368E-05 1.11E-05 1.11E-05 1.122E-17 -2.54E-17 -1.57E-18"/>
+                <geom class="visual" mesh="LM_foot" rgba="0.298 0.298 0.298 1"/>
+                <geom class="collision" mesh="LM_foot" name="LB_foot_geom"/>
+                <site name="LB_touch_site" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <!-- <actuator>
+    <motor name="RF_act_0" joint="RF_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RF_act_1" joint="RF_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RF_act_2" joint="RF_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RF_act_3" joint="RF_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+
+    <motor name="RM_act_0" joint="RM_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RM_act_1" joint="RM_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RM_act_2" joint="RM_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RM_act_3" joint="RM_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+
+    <motor name="RB_act_0" joint="RB_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RB_act_1" joint="RB_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RB_act_2" joint="RB_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="RB_act_3" joint="RB_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+
+    <motor name="LF_act_0" joint="LF_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LF_act_1" joint="LF_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LF_act_2" joint="LF_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LF_act_3" joint="LF_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+
+    <motor name="LM_act_0" joint="LM_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LM_act_1" joint="LM_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LM_act_2" joint="LM_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LM_act_3" joint="LM_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+
+    <motor name="LB_act_0" joint="LB_joint0" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LB_act_1" joint="LB_joint1" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LB_act_2" joint="LB_joint2" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+    <motor name="LB_act_3" joint="LB_joint3" ctrlrange="-80 80" gear="1" ctrllimited="true"/>
+  </actuator> -->
+
+  <actuator>
+    <position name="RF_0" joint="RF_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="RF_1" joint="RF_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="RF_2" joint="RF_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="RF_3" joint="RF_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+    <position name="RM_0" joint="RM_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="RM_1" joint="RM_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="RM_2" joint="RM_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="RM_3" joint="RM_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+    <position name="RB_0" joint="RB_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="RB_1" joint="RB_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="RB_2" joint="RB_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="RB_3" joint="RB_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+
+    <position name="LF_0" joint="LF_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="LF_1" joint="LF_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="LF_2" joint="LF_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="LF_3" joint="LF_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+    <position name="LM_0" joint="LM_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="LM_1" joint="LM_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="LM_2" joint="LM_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="LM_3" joint="LM_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+    <position name="LB_0" joint="LB_joint0" forcerange="-88 88" ctrlrange="-0.80 0.80" gear="1" ctrllimited="true"/>
+    <position name="LB_1" joint="LB_joint1" forcerange="-88 88" ctrlrange="-1.50 1.50" gear="1" ctrllimited="true"/>
+    <position name="LB_2" joint="LB_joint2" forcerange="-88 88" ctrlrange="-2.00 1.00" gear="1" ctrllimited="true"/>
+    <position name="LB_3" joint="LB_joint3" forcerange="-88 88" ctrlrange="-1.00 3.00" gear="1" ctrllimited="true"/>
+  </actuator>
+
+  <sensor>
+    <!-- Base IMU (accelerometer and gyro require a site) -->
+    <gyro site="imu" name="gyro"/>
+    <velocimeter site="imu" name="local_linvel"/>
+    <framepos objtype="site" objname="imu" name="position"/>
+    <framezaxis objtype="site" objname="imu" name="upvector"/>
+    <framelinvel objtype="site" objname="imu" name="global_linvel"/>
+    <frameangvel objtype="site" objname="imu" name="global_angvel"/>
+
+    <!-- Joint Positions and Velocities -->
+    <jointpos name="RF_0_pos" joint="RF_joint0"/><jointvel name="RF_0_vel" joint="RF_joint0"/>
+    <jointpos name="RF_1_pos" joint="RF_joint1"/><jointvel name="RF_1_vel" joint="RF_joint1"/>
+    <jointpos name="RF_2_pos" joint="RF_joint2"/><jointvel name="RF_2_vel" joint="RF_joint2"/>
+    <jointpos name="RF_3_pos" joint="RF_joint3"/><jointvel name="RF_3_vel" joint="RF_joint3"/>
+
+    <jointpos name="RM_0_pos" joint="RM_joint0"/><jointvel name="RM_0_vel" joint="RM_joint0"/>
+    <jointpos name="RM_1_pos" joint="RM_joint1"/><jointvel name="RM_1_vel" joint="RM_joint1"/>
+    <jointpos name="RM_2_pos" joint="RM_joint2"/><jointvel name="RM_2_vel" joint="RM_joint2"/>
+    <jointpos name="RM_3_pos" joint="RM_joint3"/><jointvel name="RM_3_vel" joint="RM_joint3"/>
+
+    <jointpos name="RB_0_pos" joint="RB_joint0"/><jointvel name="RB_0_vel" joint="RB_joint0"/>
+    <jointpos name="RB_1_pos" joint="RB_joint1"/><jointvel name="RB_1_vel" joint="RB_joint1"/>
+    <jointpos name="RB_2_pos" joint="RB_joint2"/><jointvel name="RB_2_vel" joint="RB_joint2"/>
+    <jointpos name="RB_3_pos" joint="RB_joint3"/><jointvel name="RB_3_vel" joint="RB_joint3"/>
+
+    <jointpos name="LF_0_pos" joint="LF_joint0"/><jointvel name="LF_0_vel" joint="LF_joint0"/>
+    <jointpos name="LF_1_pos" joint="LF_joint1"/><jointvel name="LF_1_vel" joint="LF_joint1"/>
+    <jointpos name="LF_2_pos" joint="LF_joint2"/><jointvel name="LF_2_vel" joint="LF_joint2"/>
+    <jointpos name="LF_3_pos" joint="LF_joint3"/><jointvel name="LF_3_vel" joint="LF_joint3"/>
+
+    <jointpos name="LM_0_pos" joint="LM_joint0"/><jointvel name="LM_0_vel" joint="LM_joint0"/>
+    <jointpos name="LM_1_pos" joint="LM_joint1"/><jointvel name="LM_1_vel" joint="LM_joint1"/>
+    <jointpos name="LM_2_pos" joint="LM_joint2"/><jointvel name="LM_2_vel" joint="LM_joint2"/>
+    <jointpos name="LM_3_pos" joint="LM_joint3"/><jointvel name="LM_3_vel" joint="LM_joint3"/>
+
+    <jointpos name="LB_0_pos" joint="LB_joint0"/><jointvel name="LB_0_vel" joint="LB_joint0"/>
+    <jointpos name="LB_1_pos" joint="LB_joint1"/><jointvel name="LB_1_vel" joint="LB_joint1"/>
+    <jointpos name="LB_2_pos" joint="LB_joint2"/><jointvel name="LB_2_vel" joint="LB_joint2"/>
+    <jointpos name="LB_3_pos" joint="LB_joint3"/><jointvel name="LB_3_vel" joint="LB_joint3"/>
+
+
+    <!-- Contact Sensors (Touch) -->
+    <touch name="RF_foot_contact" site="RF_touch_site"/>
+    <touch name="RM_foot_contact" site="RM_touch_site"/>
+    <touch name="RB_foot_contact" site="RB_touch_site"/>
+    <touch name="LF_foot_contact" site="LF_touch_site"/>
+    <touch name="LM_foot_contact" site="LM_touch_site"/>
+    <touch name="LB_foot_contact" site="LB_touch_site"/>
+
+    <framepos objtype="site" objname="RF_touch_site" name="RF_pos"/>
+    <framepos objtype="site" objname="RM_touch_site" name="RM_pos"/>
+    <framepos objtype="site" objname="RB_touch_site" name="RB_pos"/>
+    <framepos objtype="site" objname="LF_touch_site" name="LF_pos"/>
+    <framepos objtype="site" objname="LM_touch_site" name="LM_pos"/>
+    <framepos objtype="site" objname="LB_touch_site" name="LB_pos"/>
+  </sensor>
+</mujoco>
