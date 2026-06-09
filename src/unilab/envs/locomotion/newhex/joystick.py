@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import xml.etree.ElementTree as ET
 from collections.abc import Callable
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
@@ -69,7 +71,7 @@ class JoystickSensor(Sensor):
 class NewhexJoystickFlatCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "scene.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex2" / "scene.xml")
         )
     )
     max_episode_seconds: float = 20.0
@@ -101,6 +103,44 @@ class NewhexJoystickDomainRandomizationProvider(LocomotionDRProvider):
         )
 
 
+def _resolve_scene_xml_path(path: str, model_file: Path) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    if candidate.is_file():
+        return candidate.resolve()
+    return (model_file.parent / candidate).resolve()
+
+
+def _scene_home_keyframe_height(scene: SceneCfg) -> float:
+    model_file = Path(scene.model_file).resolve()
+    candidate_paths = [model_file]
+    candidate_paths.extend(_resolve_scene_xml_path(path, model_file) for path in scene.fragment_files)
+
+    for path in candidate_paths:
+        root = ET.parse(path).getroot()
+        key = root.find("./keyframe/key[@name='home']")
+        if key is None:
+            key = root.find("./keyframe/key")
+        if key is None:
+            continue
+        qpos_text = key.get("qpos")
+        if qpos_text is None:
+            raise ValueError(f"scene keyframe in {path} is missing qpos=...")
+        qpos = [float(value) for value in qpos_text.split()]
+        if len(qpos) < 3:
+            raise ValueError(f"scene keyframe in {path} must include floating-base xyz qpos")
+        return qpos[2]
+
+    searched = ", ".join(str(path) for path in candidate_paths)
+    raise ValueError(f"Newhex scene must define a home keyframe with qpos; searched: {searched}")
+
+
+def _apply_scene_base_height_target(cfg: NewhexJoystickFlatCfg) -> None:
+    assert cfg.reward_config is not None
+    cfg.reward_config.base_height_target = _scene_home_keyframe_height(cfg.scene) - 0.05
+
+
 @registry.env("NewhexJoystickFlat", sim_backend="mujoco")
 @registry.env("NewhexJoystickFlat", sim_backend="motrix")
 class NewhexWalkTask(NewhexBaseEnv):
@@ -109,6 +149,7 @@ class NewhexWalkTask(NewhexBaseEnv):
     def __init__(self, cfg: NewhexJoystickFlatCfg, num_envs=1, backend_type="mujoco"):
         if cfg.reward_config is None:
             raise ValueError("reward_config must be provided via Hydra configuration")
+        _apply_scene_base_height_target(cfg)
 
         self._scene_terrain_origins: np.ndarray | None = None
         scene_cfg = cfg.scene
