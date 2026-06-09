@@ -234,7 +234,7 @@ def play_viser(args: PlayInteractiveArgs, cfg: DictConfig) -> None:
             return registry.make(args.task, num_envs=env_count, sim_backend="mujoco")
         from unilab.training import create_env
 
-        env_cfg_override = _backend_adapter(cfg).build_task_env_cfg_override()
+        env_cfg_override = _backend_adapter(cfg).build_play_env_cfg_override()
         return create_env(
             cfg,
             num_envs=env_count,

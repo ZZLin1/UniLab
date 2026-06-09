@@ -4,6 +4,11 @@ training:
   task_name: NewhexJoystickFlat
   sim_backend: mujoco
 
+play_profile:
+  enabled: true
+  env:
+    commands:
+      fixed_command: [1.5, 0.0, 0.0]
 
 algo:
   num_envs: 1024
@@ -17,7 +22,7 @@ algo:
   algorithm:
     learning_rate: 3.0e-4
     entropy_coef: 1.0e-3
-    
+
 reward:
   scales:
     tracking_lin_vel: 4
@@ -26,11 +31,17 @@ reward:
     ang_vel_xy: -0.1
     base_height: -10.0
     action_rate: -0.05
+    torques: -2.0e-4
+    dof_vel: -1.0e-3
+    energy: -1.0e-5
     similar_to_default: -0.
     contact: 3
+    contact_forces: -1.0e-3
+    feet_slide: -0.1
     swing_feet_z: 7.0
     orientation: -15
     dof_acc: -4.e-7
 
   tracking_sigma: 0.4
   base_height_target: 0.4
+  contact_forces_threshold: 200.0

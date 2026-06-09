@@ -17,6 +17,7 @@ class Commands:
             [1.5, 0.5, 0.8],  # [vx_max, vy_max, vyaw_max]
         ]
     )
+    fixed_command: list[float] | None = None
     resampling_time: float = 0.0
     heading_command: bool = False
     heading_range: list[float] = field(default_factory=lambda: [-3.14, 3.14])

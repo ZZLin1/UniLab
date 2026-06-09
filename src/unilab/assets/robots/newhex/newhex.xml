@@ -291,7 +291,14 @@
     <framepos objtype="site" objname="LF_touch_site" name="LF_pos"/>
     <framepos objtype="site" objname="LM_touch_site" name="LM_pos"/>
     <framepos objtype="site" objname="LB_touch_site" name="LB_pos"/>
-  </sensor>   
+
+    <framelinvel objtype="site" objname="RF_touch_site" name="RF_vel"/>
+    <framelinvel objtype="site" objname="RM_touch_site" name="RM_vel"/>
+    <framelinvel objtype="site" objname="RB_touch_site" name="RB_vel"/>
+    <framelinvel objtype="site" objname="LF_touch_site" name="LF_vel"/>
+    <framelinvel objtype="site" objname="LM_touch_site" name="LM_vel"/>
+    <framelinvel objtype="site" objname="LB_touch_site" name="LB_vel"/>
+  </sensor>
   <visual>
     <rgba haze="0.15 0.25 0.35 1" />
   </visual>
