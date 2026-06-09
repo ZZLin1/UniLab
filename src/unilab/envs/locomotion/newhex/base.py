@@ -19,8 +19,8 @@ class NoiseConfig(BaseNoiseConfig):
 
 @dataclass
 class ControlConfig(PdControlConfig):
-    Kp: float = 160.0
-    Kd: float =0.7
+    Kp: float = 80.0
+    Kd: float =0.5
 
 
 @dataclass
@@ -31,7 +31,7 @@ class Asset:
 
 
 @dataclass
-class Hex4BaseCfg(LocomotionBaseCfg):
+class NewhexBaseCfg(LocomotionBaseCfg):
     noise_config: NoiseConfig = field(default_factory=NoiseConfig)  # type: ignore[assignment]
     control_config: ControlConfig = field(default_factory=ControlConfig)  # type: ignore[assignment]
     asset: Asset = field(default_factory=Asset)
@@ -39,8 +39,8 @@ class Hex4BaseCfg(LocomotionBaseCfg):
     ctrl_dt: float = 0.02
 
 
-class Hex4BaseEnv(LocomotionBaseEnv):
-    _cfg: Hex4BaseCfg
+class NewhexBaseEnv(LocomotionBaseEnv):
+    _cfg: NewhexBaseCfg
 
     def get_foot_pos(self) -> np.ndarray:
         """Get foot positions. Returns shape (num_envs, 6, 3)"""
