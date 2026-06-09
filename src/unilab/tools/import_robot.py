@@ -9,8 +9,10 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import subprocess
 import sys
+import tempfile
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
@@ -20,6 +22,10 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 ROBOT_ASSET_ROOT = REPO_ROOT / "src" / "unilab" / "assets" / "robots"
 TEMP_MESH_PREFIX = "meshes/meshes/"
 DEFAULT_MATERIAL = "default_material"
+IMU_SITE = "imu"
+FOOT_LINK_SUFFIX = "_foot_link"
+TOUCH_SITE_SUFFIX = "_touch_site"
+LEG_SENSOR_ORDER = ("RF", "RM", "RB", "LF", "LM", "LB")
 _FREE_X_HELPER_JOINT = "__unilab_keyframe_x"
 _FREE_Y_HELPER_JOINT = "__unilab_keyframe_y"
 _HEIGHT_HELPER_JOINT = "__unilab_keyframe_height"
@@ -79,10 +85,365 @@ def _convert_urdf(urdf: Path, output_xml: Path) -> None:
     )
 
 
-def _move_mesh_assets(robot_dir: Path) -> None:
+def _local_name(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1]
+
+
+def _child_by_tag(element: ET.Element, tag: str) -> ET.Element | None:
+    for child in element:
+        if _local_name(child.tag) == tag:
+            return child
+    return None
+
+
+def _children_by_tag(element: ET.Element, tag: str) -> Iterable[ET.Element]:
+    return (child for child in element if _local_name(child.tag) == tag)
+
+
+def _parse_urdf_vector(text: str | None, *, default: Sequence[float]) -> list[float]:
+    if text is None:
+        return list(default)
+    values = [float(part) for part in text.split()]
+    if len(values) != len(default):
+        raise ValueError(f"expected {len(default)} values, got {len(values)}: {text}")
+    return values
+
+
+def _quat_from_rpy(rpy: Sequence[float]) -> list[float]:
+    roll, pitch, yaw = rpy
+    cr = math.cos(roll * 0.5)
+    sr = math.sin(roll * 0.5)
+    cp = math.cos(pitch * 0.5)
+    sp = math.sin(pitch * 0.5)
+    cy = math.cos(yaw * 0.5)
+    sy = math.sin(yaw * 0.5)
+    return [
+        cr * cp * cy + sr * sp * sy,
+        sr * cp * cy - cr * sp * sy,
+        cr * sp * cy + sr * cp * sy,
+        cr * cp * sy - sr * sp * cy,
+    ]
+
+
+def _rotation_from_rpy(rpy: Sequence[float]) -> list[list[float]]:
+    roll, pitch, yaw = rpy
+    cr = math.cos(roll)
+    sr = math.sin(roll)
+    cp = math.cos(pitch)
+    sp = math.sin(pitch)
+    cy = math.cos(yaw)
+    sy = math.sin(yaw)
+    return [
+        [cy * cp, cy * sp * sr - sy * cr, cy * sp * cr + sy * sr],
+        [sy * cp, sy * sp * sr + cy * cr, sy * sp * cr - cy * sr],
+        [-sp, cp * sr, cp * cr],
+    ]
+
+
+def _rotate_inertia(inertia: Sequence[Sequence[float]], rpy: Sequence[float]) -> list[list[float]]:
+    rotation = _rotation_from_rpy(rpy)
+    rotated: list[list[float]] = []
+    for row in range(3):
+        rotated_row: list[float] = []
+        for col in range(3):
+            value = 0.0
+            for i in range(3):
+                for j in range(3):
+                    value += rotation[row][i] * inertia[i][j] * rotation[col][j]
+            rotated_row.append(value)
+        rotated.append(rotated_row)
+    return rotated
+
+
+def _full_inertia_values(matrix: Sequence[Sequence[float]]) -> list[float]:
+    return [matrix[0][0], matrix[1][1], matrix[2][2], matrix[0][1], matrix[0][2], matrix[1][2]]
+
+
+def _urdf_root_link(urdf_root: ET.Element) -> ET.Element | None:
+    links: dict[str, ET.Element] = {}
+    for link in _children_by_tag(urdf_root, "link"):
+        name = link.get("name")
+        if name is not None:
+            links[name] = link
+    child_links: set[str] = set()
+    for joint in _children_by_tag(urdf_root, "joint"):
+        child = _child_by_tag(joint, "child")
+        if child is not None and child.get("link"):
+            child_links.add(cast(str, child.get("link")))
+
+    root_names = [name for name in links if name not in child_links]
+    if not root_names:
+        return None
+    return links[root_names[0]]
+
+
+def _urdf_root_link_inertial_attrs(urdf: Path) -> tuple[str, dict[str, str]] | None:
+    urdf_root = ET.parse(urdf).getroot()
+    root_link = _urdf_root_link(urdf_root)
+    if root_link is None:
+        return None
+
+    inertial = _child_by_tag(root_link, "inertial")
+    if inertial is None:
+        return None
+
+    mass = _child_by_tag(inertial, "mass")
+    inertia = _child_by_tag(inertial, "inertia")
+    if mass is None or inertia is None or mass.get("value") is None:
+        return None
+
+    origin = _child_by_tag(inertial, "origin")
+    xyz = _parse_urdf_vector(
+        origin.get("xyz") if origin is not None else None,
+        default=[0.0, 0.0, 0.0],
+    )
+    rpy = _parse_urdf_vector(
+        origin.get("rpy") if origin is not None else None,
+        default=[0.0, 0.0, 0.0],
+    )
+    ixx = float(inertia.get("ixx", "0"))
+    iyy = float(inertia.get("iyy", "0"))
+    izz = float(inertia.get("izz", "0"))
+    ixy = float(inertia.get("ixy", "0"))
+    ixz = float(inertia.get("ixz", "0"))
+    iyz = float(inertia.get("iyz", "0"))
+
+    attrs = {
+        "pos": _format_values(xyz),
+        "mass": _format_float(float(mass.get("value"))),
+    }
+    if any(not math.isclose(value, 0.0, abs_tol=1e-15) for value in (ixy, ixz, iyz)):
+        inertia_matrix = [
+            [ixx, ixy, ixz],
+            [ixy, iyy, iyz],
+            [ixz, iyz, izz],
+        ]
+        rotated_inertia = _rotate_inertia(inertia_matrix, rpy)
+        attrs["fullinertia"] = _format_values(_full_inertia_values(rotated_inertia))
+    else:
+        attrs["quat"] = _format_values(_quat_from_rpy(rpy))
+        attrs["diaginertia"] = _format_values([ixx, iyy, izz])
+    return cast(str, root_link.get("name")), attrs
+
+
+def _insert_body_inertial(body: ET.Element, attrs: dict[str, str]) -> None:
+    for child in list(body):
+        if child.tag == "inertial":
+            body.remove(child)
+
+    inertial = ET.Element("inertial", attrs)
+    insert_at = 0
+    for index, child in enumerate(list(body)):
+        if child.tag in {"freejoint", "joint"}:
+            insert_at = index + 1
+            continue
+        break
+    body.insert(insert_at, inertial)
+
+
+def _has_direct_child(element: ET.Element, tag: str, attrs: dict[str, str]) -> bool:
+    return any(child.tag == tag and _attrs_match(child, attrs) for child in element)
+
+
+def _root_body(root: ET.Element) -> ET.Element | None:
+    return root.find("./worldbody/body")
+
+
+def _leg_sort_key(name: str) -> tuple[int, str]:
+    prefix = name.split("_", 1)[0]
+    try:
+        return LEG_SENSOR_ORDER.index(prefix), name
+    except ValueError:
+        return len(LEG_SENSOR_ORDER), name
+
+
+def _joint_sensor_key(joint_name: str) -> tuple[int, str, int, str]:
+    prefix, _, suffix = joint_name.partition("_joint")
+    try:
+        prefix_order = LEG_SENSOR_ORDER.index(prefix)
+    except ValueError:
+        prefix_order = len(LEG_SENSOR_ORDER)
+    try:
+        joint_order = int(suffix)
+    except ValueError:
+        joint_order = 0
+    return prefix_order, prefix, joint_order, suffix
+
+
+def _insert_site_after_geoms(body: ET.Element, site: ET.Element) -> None:
+    insert_at = 0
+    for index, child in enumerate(list(body)):
+        if child.tag in {"inertial", "joint", "freejoint", "geom"}:
+            insert_at = index + 1
+            continue
+        break
+    body.insert(insert_at, site)
+
+
+def _ensure_imu_site(root: ET.Element) -> bool:
+    body = _root_body(root)
+    if body is None:
+        return False
+    if _has_direct_child(body, "site", {"name": IMU_SITE}):
+        return True
+
+    _insert_site_after_geoms(
+        body,
+        ET.Element(
+            "site",
+            {"name": IMU_SITE, "pos": "0 0 0", "size": "0.01", "rgba": "1 0 0 1"},
+        ),
+    )
+    return True
+
+
+def _ensure_foot_touch_sites(root: ET.Element) -> list[str]:
+    touch_site_names: list[str] = []
+    for body in root.findall(".//body"):
+        body_name = body.get("name")
+        if body_name is None or not body_name.endswith(FOOT_LINK_SUFFIX):
+            continue
+        foot_prefix = body_name[: -len(FOOT_LINK_SUFFIX)]
+        site_name = f"{foot_prefix}{TOUCH_SITE_SUFFIX}"
+        touch_site_names.append(site_name)
+        if _has_direct_child(body, "site", {"name": site_name}):
+            continue
+        _insert_site_after_geoms(
+            body,
+            ET.Element("site", {"name": site_name, "size": "0.01", "rgba": "0 0 0 0"}),
+        )
+    return sorted(touch_site_names, key=_leg_sort_key)
+
+
+def _sensor_name_for_joint(joint_name: str, sensor_type: str) -> str:
+    prefix, separator, suffix = joint_name.partition("_joint")
+    if separator:
+        return f"{prefix}_{suffix}_{sensor_type}"
+    return f"{joint_name}_{sensor_type}"
+
+
+def _actuated_joint_names(root: ET.Element) -> list[str]:
+    joint_names: list[str] = []
+    seen: set[str] = set()
+    for actuator in root.findall("./actuator/*"):
+        joint_name = actuator.get("joint")
+        if joint_name is None or joint_name in seen:
+            continue
+        seen.add(joint_name)
+        joint_names.append(joint_name)
+    return sorted(joint_names, key=_joint_sensor_key)
+
+
+def _append_imu_sensors(sensor: ET.Element) -> None:
+    sensor_specs = [
+        ("gyro", {"site": IMU_SITE, "name": "gyro"}),
+        ("velocimeter", {"site": IMU_SITE, "name": "local_linvel"}),
+        ("framepos", {"objtype": "site", "objname": IMU_SITE, "name": "position"}),
+        ("framezaxis", {"objtype": "site", "objname": IMU_SITE, "name": "upvector"}),
+        ("framelinvel", {"objtype": "site", "objname": IMU_SITE, "name": "global_linvel"}),
+        ("frameangvel", {"objtype": "site", "objname": IMU_SITE, "name": "global_angvel"}),
+    ]
+    for tag, attrs in sensor_specs:
+        ET.SubElement(sensor, tag, attrs)
+
+
+def _append_joint_sensors(sensor: ET.Element, joint_names: Sequence[str]) -> None:
+    for joint_name in joint_names:
+        ET.SubElement(
+            sensor,
+            "jointpos",
+            {"name": _sensor_name_for_joint(joint_name, "pos"), "joint": joint_name},
+        )
+        ET.SubElement(
+            sensor,
+            "jointvel",
+            {"name": _sensor_name_for_joint(joint_name, "vel"), "joint": joint_name},
+        )
+
+
+def _append_touch_sensors(sensor: ET.Element, touch_site_names: Sequence[str]) -> None:
+    for site_name in touch_site_names:
+        foot_prefix = site_name[: -len(TOUCH_SITE_SUFFIX)]
+        ET.SubElement(sensor, "touch", {"name": f"{foot_prefix}_foot_contact", "site": site_name})
+    for site_name in touch_site_names:
+        foot_prefix = site_name[: -len(TOUCH_SITE_SUFFIX)]
+        ET.SubElement(
+            sensor,
+            "framepos",
+            {"objtype": "site", "objname": site_name, "name": f"{foot_prefix}_pos"},
+        )
+    for site_name in touch_site_names:
+        foot_prefix = site_name[: -len(TOUCH_SITE_SUFFIX)]
+        ET.SubElement(
+            sensor,
+            "framelinvel",
+            {"objtype": "site", "objname": site_name, "name": f"{foot_prefix}_vel"},
+        )
+
+
+def _rebuild_generated_sensors(
+    root: ET.Element, *, include_imu: bool, touch_site_names: Sequence[str]
+) -> None:
+    joint_names = _actuated_joint_names(root)
+    if not include_imu and not touch_site_names and not joint_names:
+        return
+
+    for sensor in root.findall("sensor"):
+        root.remove(sensor)
+
+    sensor = ET.Element("sensor")
+    if include_imu:
+        _append_imu_sensors(sensor)
+    _append_joint_sensors(sensor, joint_names)
+    _append_touch_sensors(sensor, touch_site_names)
+    root.append(sensor)
+
+
+def _ensure_generated_sites_and_sensors(root: ET.Element) -> None:
+    include_imu = _ensure_imu_site(root)
+    touch_site_names = _ensure_foot_touch_sites(root)
+    if not include_imu and not touch_site_names:
+        return
+    _rebuild_generated_sensors(root, include_imu=include_imu, touch_site_names=touch_site_names)
+
+
+def _preserve_root_link_inertial(urdf: Path, xml_path: Path) -> None:
+    inertial = _urdf_root_link_inertial_attrs(urdf)
+    if inertial is None:
+        return
+    root_link_name, attrs = inertial
+
+    tree = ET.parse(xml_path)
+    root = tree.getroot()
+    body = root.find(f"./worldbody/body[@name='{root_link_name}']")
+    if body is None:
+        body = root.find("./worldbody/body")
+    if body is None:
+        raise ValueError("converted robot XML must define a root body under <worldbody>")
+
+    _insert_body_inertial(body, attrs)
+    ET.indent(tree, space="  ")
+    tree.write(xml_path, encoding="unicode")
+
+
+def _xml_references_generated_mesh_assets(xml_path: Path) -> bool:
+    root = ET.parse(xml_path).getroot()
+    for mesh in root.findall(".//mesh"):
+        mesh_file = mesh.get("file")
+        if mesh_file is None:
+            continue
+        normalized = mesh_file.replace("\\", "/")
+        if normalized.startswith(TEMP_MESH_PREFIX):
+            return True
+    return False
+
+
+def _move_mesh_assets(robot_dir: Path, robot_xml: Path) -> None:
     generated_mesh_dir = robot_dir / "meshes" / "meshes"
     target_assets_dir = robot_dir / "assets"
     if not generated_mesh_dir.is_dir():
+        if not _xml_references_generated_mesh_assets(robot_xml):
+            return
         raise FileNotFoundError(f"expected generated mesh directory: {generated_mesh_dir}")
     if target_assets_dir.exists():
         raise FileExistsError(f"target assets directory already exists: {target_assets_dir}")
@@ -287,6 +648,57 @@ def _scene_keyframe_values(robot_xml: Path) -> tuple[list[float], list[float]]:
 def _write_scene_xml(robot_xml: Path, scene_xml: Path, robot_name: str) -> None:
     qpos, ctrl = _scene_keyframe_values(robot_xml)
     root = ET.Element("mujoco", {"model": f"{robot_name} scene"})
+
+    ET.SubElement(root, "include", {"file": robot_xml.name})
+
+    default = ET.SubElement(root, "default")
+    floor_default = ET.SubElement(default, "default", {"class": "floor"})
+    ET.SubElement(
+        floor_default,
+        "geom",
+        {"type": "plane", "size": "0 0 0.05", "material": "groundplane"},
+    )
+
+    visual = ET.SubElement(root, "visual")
+    ET.SubElement(visual, "global", {"offwidth": "3840", "offheight": "2160"})
+    ET.SubElement(visual, "rgba", {"haze": "0.15 0.25 0.35 1"})
+
+    asset = ET.SubElement(root, "asset")
+    ET.SubElement(
+        asset,
+        "texture",
+        {
+            "type": "2d",
+            "name": "groundplane",
+            "builtin": "checker",
+            "mark": "edge",
+            "rgb1": "0.2 0.3 0.4",
+            "rgb2": "0.1 0.2 0.3",
+            "markrgb": "0.8 0.8 0.8",
+            "width": "300",
+            "height": "300",
+        },
+    )
+    ET.SubElement(
+        asset,
+        "material",
+        {
+            "name": "groundplane",
+            "texture": "groundplane",
+            "texuniform": "true",
+            "texrepeat": "5 5",
+            "reflectance": "0.2",
+        },
+    )
+
+    worldbody = ET.SubElement(root, "worldbody")
+    ET.SubElement(
+        worldbody,
+        "light",
+        {"pos": "0 0 1.5", "dir": "0 0 -1", "directional": "true"},
+    )
+    ET.SubElement(worldbody, "geom", {"name": "floor", "class": "floor", "size": "0 0 0.05"})
+
     keyframe = ET.SubElement(root, "keyframe")
     ET.SubElement(
         keyframe,
@@ -298,6 +710,26 @@ def _write_scene_xml(robot_xml: Path, scene_xml: Path, robot_name: str) -> None:
     tree.write(scene_xml, encoding="unicode")
 
 
+def _strip_scene_includes_for_fragment(scene_xml: Path) -> Path:
+    tree = ET.parse(scene_xml)
+    root = tree.getroot()
+    includes = root.findall("include")
+    if not includes:
+        return scene_xml
+    for include in includes:
+        root.remove(include)
+
+    tmp = tempfile.NamedTemporaryFile(
+        suffix=f"_{scene_xml.name}",
+        dir=str(scene_xml.parent),
+        mode="w",
+        delete=False,
+    )
+    tmp.close()
+    tree.write(tmp.name)
+    return Path(tmp.name)
+
+
 def _postprocess_xml(xml_path: Path) -> None:
     tree = ET.parse(xml_path)
     root = tree.getroot()
@@ -306,6 +738,7 @@ def _postprocess_xml(xml_path: Path) -> None:
     _ensure_robot_default_joint(root)
     _remove_default_material(root)
     _strip_generated_scene_bits(root)
+    _ensure_generated_sites_and_sensors(root)
     ET.indent(tree, space="  ")
     tree.write(xml_path, encoding="unicode")
 
@@ -423,7 +856,7 @@ def _ensure_tuning_scene_visuals(root: ET.Element) -> None:
     if asset is None:
         asset = ET.Element("asset")
         root.insert(1, asset)
-    if asset.find("./texture[@name='groundplane']") is None:
+    if root.find(".//texture[@name='groundplane']") is None:
         asset.append(
             ET.Element(
                 "texture",
@@ -440,7 +873,7 @@ def _ensure_tuning_scene_visuals(root: ET.Element) -> None:
                 },
             )
         )
-    if asset.find("./material[@name='groundplane']") is None:
+    if root.find(".//material[@name='groundplane']") is None:
         asset.append(
             ET.Element(
                 "material",
@@ -457,7 +890,7 @@ def _ensure_tuning_scene_visuals(root: ET.Element) -> None:
     worldbody = root.find("worldbody")
     if worldbody is None:
         worldbody = ET.SubElement(root, "worldbody")
-    if worldbody.find("./light[@name='__unilab_tuning_light']") is None:
+    if root.find(".//light[@name='__unilab_tuning_light']") is None:
         worldbody.append(
             ET.Element(
                 "light",
@@ -469,7 +902,7 @@ def _ensure_tuning_scene_visuals(root: ET.Element) -> None:
                 },
             )
         )
-    if worldbody.find("./geom[@name='floor']") is None:
+    if root.find(".//geom[@name='floor']") is None:
         worldbody.append(
             ET.Element(
                 "geom",
@@ -494,7 +927,12 @@ def _materialize_tuning_scene(
 ) -> Path:
     from unilab.base.backend.mujoco.xml import materialize_scene_fragments
 
-    merged = materialize_scene_fragments(str(robot_xml), fragment_files=[str(scene_xml)])
+    fragment_xml = _strip_scene_includes_for_fragment(scene_xml)
+    try:
+        merged = materialize_scene_fragments(str(robot_xml), fragment_files=[str(fragment_xml)])
+    finally:
+        if fragment_xml != scene_xml:
+            fragment_xml.unlink(missing_ok=True)
     tree = ET.parse(merged)
     root = tree.getroot()
     _ensure_tuning_scene_visuals(root)
@@ -643,7 +1081,8 @@ def convert(urdf_path: str, robot_name: str | None) -> Path:
     output_xml = robot_dir / f"{name}.xml"
 
     _convert_urdf(urdf, output_xml)
-    _move_mesh_assets(robot_dir)
+    _preserve_root_link_inertial(urdf, output_xml)
+    _move_mesh_assets(robot_dir, output_xml)
     _postprocess_xml(output_xml)
     _write_scene_xml(output_xml, robot_dir / "scene.xml", name)
 

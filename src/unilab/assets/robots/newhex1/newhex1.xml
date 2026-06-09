@@ -1,6 +1,7 @@
-<mujoco model="newhex">
+<mujoco model="hexapod_robot_BASIC">
   <default>
     <default class="robot">
+      <joint damping="2" armature="0.01" frictionloss="0.2" />
       <default class="visual">
         <geom contype="0" conaffinity="0" group="2" />
       </default>
@@ -8,24 +9,16 @@
         <geom contype="0" conaffinity="1" group="3" />
       </default>
     </default>
-    <default class="floor">
-      <geom type="plane" size="0 0 0.05" material="groundplane" />
-    </default>
   </default>
-
-  <compiler angle="radian" meshdir="." balanceinertia="true" />
-
-  <visual>
-    <global offwidth="3840" offheight="2160" />
-  </visual>
-
+  <compiler angle="radian" meshdir="assets" balanceinertia="true" />
   <worldbody>
     <body name="base_link" childclass="robot" pos="0 0 0.5491">
+      <inertial pos="0 0 0" mass="1.32" quat="1 0 0 0" diaginertia="0.0166667 0.0166667 0.0166667" />
       <geom name="base_link_collision_0" type="box" size="0.4 0.1 0.05" class="collision" />
       <geom name="base_link_collision_1" pos="0.1 0 0" type="box" size="0.05 0.2 0.05" class="collision" />
       <geom name="base_link_visual_0" type="box" size="0.4 0.1 0.05" material="grey" class="visual" />
       <geom name="base_link_visual_1" pos="0.1 0 0" type="box" size="0.05 0.2 0.05" material="grey" class="visual" />
-      <site name="imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <site name="imu" pos="0 0 0" size="0.01" rgba="1 0 0 1" />
       <body name="LF_link1" pos="0.4 0.1 0" quat="0.7071 0 0.7071 0">
         <inertial pos="0 0 0" quat="1 0 0 0" mass="0.4" diaginertia="0.000968 0.000968 0.000784" />
         <joint name="LF_joint1" type="hinge" range="-6.28 6.28" axis="0 0 1" />
@@ -54,7 +47,7 @@
                 <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
                 <geom name="LF_foot_link_collision" type="sphere" size="0.025" class="collision" />
                 <geom name="LF_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-                <site name="LF_touch_site" size="0.01" rgba="0 0 0 0"/>
+                <site name="LF_touch_site" size="0.01" rgba="0 0 0 0" />
               </body>
             </body>
           </body>
@@ -82,7 +75,7 @@
               <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
               <geom name="LM_foot_link_collision" type="sphere" size="0.025" class="collision" />
               <geom name="LM_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-              <site name="LM_touch_site" size="0.01" rgba="0 0 0 0"/>
+              <site name="LM_touch_site" size="0.01" rgba="0 0 0 0" />
             </body>
           </body>
         </body>
@@ -109,7 +102,7 @@
               <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
               <geom name="LB_foot_link_collision" type="sphere" size="0.025" class="collision" />
               <geom name="LB_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-              <site name="LB_touch_site" size="0.01" rgba="0 0 0 0"/>
+              <site name="LB_touch_site" size="0.01" rgba="0 0 0 0" />
             </body>
           </body>
         </body>
@@ -142,7 +135,7 @@
                 <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
                 <geom name="RF_foot_link_collision" type="sphere" size="0.025" class="collision" />
                 <geom name="RF_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-                <site name="RF_touch_site" size="0.01" rgba="0 0 0 0"/>
+                <site name="RF_touch_site" size="0.01" rgba="0 0 0 0" />
               </body>
             </body>
           </body>
@@ -170,7 +163,7 @@
               <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
               <geom name="RM_foot_link_collision" type="sphere" size="0.025" class="collision" />
               <geom name="RM_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-              <site name="RM_touch_site" size="0.01" rgba="0 0 0 0"/>
+              <site name="RM_touch_site" size="0.01" rgba="0 0 0 0" />
             </body>
           </body>
         </body>
@@ -197,26 +190,19 @@
               <inertial pos="0 0 0" quat="1 0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05" />
               <geom name="RB_foot_link_collision" type="sphere" size="0.025" class="collision" />
               <geom name="RB_foot_link_visual" type="sphere" size="0.025" material="grey" class="visual" />
-              <site name="RB_touch_site" size="0.01" rgba="0 0 0 0"/>
+              <site name="RB_touch_site" size="0.01" rgba="0 0 0 0" />
             </body>
           </body>
         </body>
       </body>
       <freejoint name="floating_base" />
     </body>
-    <light pos="0 0 2." dir="0 0 -1" directional="true" />
-    <geom name="floor" class="floor" size="0 0 0.05" />
   </worldbody>
-
   <asset>
     <material name="blue" rgba="0 0 0.8 1" />
     <material name="red" rgba="0.8 0 0 1" />
     <material name="grey" rgba="0.7 0.7 0.7 1" />
-    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
-    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
-    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
   </asset>
-
   <actuator>
     <position name="LF_joint1" joint="LF_joint1" />
     <position name="LF_joint2" joint="LF_joint2" />
@@ -239,66 +225,70 @@
     <position name="RB_joint2" joint="RB_joint2" />
     <position name="RB_joint3" joint="RB_joint3" />
   </actuator>
-<sensor>
-    <!-- Base IMU (accelerometer and gyro require a site) -->
-    <gyro site="imu" name="gyro"/>
-    <velocimeter site="imu" name="local_linvel"/>
-    <framepos objtype="site" objname="imu" name="position"/>
-    <framezaxis objtype="site" objname="imu" name="upvector"/>
-    <framelinvel objtype="site" objname="imu" name="global_linvel"/>
-    <frameangvel objtype="site" objname="imu" name="global_angvel"/>
-
-    <!-- Joint Positions and Velocities -->
-    <jointpos name="RF_1_pos" joint="RF_joint1"/><jointvel name="RF_1_vel" joint="RF_joint1"/>
-    <jointpos name="RF_2_pos" joint="RF_joint2"/><jointvel name="RF_2_vel" joint="RF_joint2"/>
-    <jointpos name="RF_3_pos" joint="RF_joint3"/><jointvel name="RF_3_vel" joint="RF_joint3"/>
-    <jointpos name="RF_4_pos" joint="RF_joint4"/><jointvel name="RF_4_vel" joint="RF_joint4"/>
-
-    <jointpos name="RM_1_pos" joint="RM_joint1"/><jointvel name="RM_1_vel" joint="RM_joint1"/>
-    <jointpos name="RM_2_pos" joint="RM_joint2"/><jointvel name="RM_2_vel" joint="RM_joint2"/>
-    <jointpos name="RM_3_pos" joint="RM_joint3"/><jointvel name="RM_3_vel" joint="RM_joint3"/>
-
-    <jointpos name="RB_1_pos" joint="RB_joint1"/><jointvel name="RB_1_vel" joint="RB_joint1"/>
-    <jointpos name="RB_2_pos" joint="RB_joint2"/><jointvel name="RB_2_vel" joint="RB_joint2"/>
-    <jointpos name="RB_3_pos" joint="RB_joint3"/><jointvel name="RB_3_vel" joint="RB_joint3"/>
-
-    <jointpos name="LF_1_pos" joint="LF_joint1"/><jointvel name="LF_1_vel" joint="LF_joint1"/>
-    <jointpos name="LF_2_pos" joint="LF_joint2"/><jointvel name="LF_2_vel" joint="LF_joint2"/>
-    <jointpos name="LF_3_pos" joint="LF_joint3"/><jointvel name="LF_3_vel" joint="LF_joint3"/>
-    <jointpos name="LF_4_pos" joint="LF_joint4"/><jointvel name="LF_4_vel" joint="LF_joint4"/>
-
-    <jointpos name="LM_1_pos" joint="LM_joint1"/><jointvel name="LM_1_vel" joint="LM_joint1"/>
-    <jointpos name="LM_2_pos" joint="LM_joint2"/><jointvel name="LM_2_vel" joint="LM_joint2"/>
-    <jointpos name="LM_3_pos" joint="LM_joint3"/><jointvel name="LM_3_vel" joint="LM_joint3"/>
-
-    <jointpos name="LB_1_pos" joint="LB_joint1"/><jointvel name="LB_1_vel" joint="LB_joint1"/>
-    <jointpos name="LB_2_pos" joint="LB_joint2"/><jointvel name="LB_2_vel" joint="LB_joint2"/>
-    <jointpos name="LB_3_pos" joint="LB_joint3"/><jointvel name="LB_3_vel" joint="LB_joint3"/>
-
-
-    <!-- Contact Sensors (Touch) -->
-    <touch name="RF_foot_contact" site="RF_touch_site"/>
-    <touch name="RM_foot_contact" site="RM_touch_site"/>
-    <touch name="RB_foot_contact" site="RB_touch_site"/>
-    <touch name="LF_foot_contact" site="LF_touch_site"/>
-    <touch name="LM_foot_contact" site="LM_touch_site"/>
-    <touch name="LB_foot_contact" site="LB_touch_site"/>
-
-    <framepos objtype="site" objname="RF_touch_site" name="RF_pos"/>
-    <framepos objtype="site" objname="RM_touch_site" name="RM_pos"/>
-    <framepos objtype="site" objname="RB_touch_site" name="RB_pos"/>
-    <framepos objtype="site" objname="LF_touch_site" name="LF_pos"/>
-    <framepos objtype="site" objname="LM_touch_site" name="LM_pos"/>
-    <framepos objtype="site" objname="LB_touch_site" name="LB_pos"/>
-
-    <framelinvel objtype="site" objname="RF_touch_site" name="RF_vel"/>
-    <framelinvel objtype="site" objname="RM_touch_site" name="RM_vel"/>
-    <framelinvel objtype="site" objname="RB_touch_site" name="RB_vel"/>
-    <framelinvel objtype="site" objname="LF_touch_site" name="LF_vel"/>
-    <framelinvel objtype="site" objname="LM_touch_site" name="LM_vel"/>
-    <framelinvel objtype="site" objname="LB_touch_site" name="LB_vel"/>
+  <sensor>
+    <gyro site="imu" name="gyro" />
+    <velocimeter site="imu" name="local_linvel" />
+    <framepos objtype="site" objname="imu" name="position" />
+    <framezaxis objtype="site" objname="imu" name="upvector" />
+    <framelinvel objtype="site" objname="imu" name="global_linvel" />
+    <frameangvel objtype="site" objname="imu" name="global_angvel" />
+    <jointpos name="RF_1_pos" joint="RF_joint1" />
+    <jointvel name="RF_1_vel" joint="RF_joint1" />
+    <jointpos name="RF_2_pos" joint="RF_joint2" />
+    <jointvel name="RF_2_vel" joint="RF_joint2" />
+    <jointpos name="RF_3_pos" joint="RF_joint3" />
+    <jointvel name="RF_3_vel" joint="RF_joint3" />
+    <jointpos name="RF_4_pos" joint="RF_joint4" />
+    <jointvel name="RF_4_vel" joint="RF_joint4" />
+    <jointpos name="RM_1_pos" joint="RM_joint1" />
+    <jointvel name="RM_1_vel" joint="RM_joint1" />
+    <jointpos name="RM_2_pos" joint="RM_joint2" />
+    <jointvel name="RM_2_vel" joint="RM_joint2" />
+    <jointpos name="RM_3_pos" joint="RM_joint3" />
+    <jointvel name="RM_3_vel" joint="RM_joint3" />
+    <jointpos name="RB_1_pos" joint="RB_joint1" />
+    <jointvel name="RB_1_vel" joint="RB_joint1" />
+    <jointpos name="RB_2_pos" joint="RB_joint2" />
+    <jointvel name="RB_2_vel" joint="RB_joint2" />
+    <jointpos name="RB_3_pos" joint="RB_joint3" />
+    <jointvel name="RB_3_vel" joint="RB_joint3" />
+    <jointpos name="LF_1_pos" joint="LF_joint1" />
+    <jointvel name="LF_1_vel" joint="LF_joint1" />
+    <jointpos name="LF_2_pos" joint="LF_joint2" />
+    <jointvel name="LF_2_vel" joint="LF_joint2" />
+    <jointpos name="LF_3_pos" joint="LF_joint3" />
+    <jointvel name="LF_3_vel" joint="LF_joint3" />
+    <jointpos name="LF_4_pos" joint="LF_joint4" />
+    <jointvel name="LF_4_vel" joint="LF_joint4" />
+    <jointpos name="LM_1_pos" joint="LM_joint1" />
+    <jointvel name="LM_1_vel" joint="LM_joint1" />
+    <jointpos name="LM_2_pos" joint="LM_joint2" />
+    <jointvel name="LM_2_vel" joint="LM_joint2" />
+    <jointpos name="LM_3_pos" joint="LM_joint3" />
+    <jointvel name="LM_3_vel" joint="LM_joint3" />
+    <jointpos name="LB_1_pos" joint="LB_joint1" />
+    <jointvel name="LB_1_vel" joint="LB_joint1" />
+    <jointpos name="LB_2_pos" joint="LB_joint2" />
+    <jointvel name="LB_2_vel" joint="LB_joint2" />
+    <jointpos name="LB_3_pos" joint="LB_joint3" />
+    <jointvel name="LB_3_vel" joint="LB_joint3" />
+    <touch name="RF_foot_contact" site="RF_touch_site" />
+    <touch name="RM_foot_contact" site="RM_touch_site" />
+    <touch name="RB_foot_contact" site="RB_touch_site" />
+    <touch name="LF_foot_contact" site="LF_touch_site" />
+    <touch name="LM_foot_contact" site="LM_touch_site" />
+    <touch name="LB_foot_contact" site="LB_touch_site" />
+    <framepos objtype="site" objname="RF_touch_site" name="RF_pos" />
+    <framepos objtype="site" objname="RM_touch_site" name="RM_pos" />
+    <framepos objtype="site" objname="RB_touch_site" name="RB_pos" />
+    <framepos objtype="site" objname="LF_touch_site" name="LF_pos" />
+    <framepos objtype="site" objname="LM_touch_site" name="LM_pos" />
+    <framepos objtype="site" objname="LB_touch_site" name="LB_pos" />
+    <framelinvel objtype="site" objname="RF_touch_site" name="RF_vel" />
+    <framelinvel objtype="site" objname="RM_touch_site" name="RM_vel" />
+    <framelinvel objtype="site" objname="RB_touch_site" name="RB_vel" />
+    <framelinvel objtype="site" objname="LF_touch_site" name="LF_vel" />
+    <framelinvel objtype="site" objname="LM_touch_site" name="LM_vel" />
+    <framelinvel objtype="site" objname="LB_touch_site" name="LB_vel" />
   </sensor>
-  <visual>
-    <rgba haze="0.15 0.25 0.35 1" />
-  </visual>
 </mujoco>

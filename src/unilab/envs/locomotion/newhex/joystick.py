@@ -24,6 +24,7 @@ from unilab.envs.locomotion.common.terrain_spawn import (
 )
 from unilab.envs.locomotion.newhex.base import NewhexBaseCfg, NewhexBaseEnv
 
+
 @dataclass
 class InitState:
     pos = [0.0, 0.0, 1.5]
@@ -37,12 +38,14 @@ class NewhexDomainRandConfig(DomainRandConfig):
     randomize_kd: bool = True
     kd_multiplier_range: list[float] = field(default_factory=lambda: [0.9, 1.1])
 
+
 @dataclass
 class RewardConfig:
     scales: dict[str, float]
     tracking_sigma: float
     base_height_target: float
     target_foot_height: float = 0.1
+    contact_forces_threshold: float = 200.0
 
 
 @dataclass
@@ -58,6 +61,7 @@ class JoystickSensor(Sensor):
         "LM_foot_contact",
         "LB_foot_contact",
     ]
+    feet_vel = ["RF_vel", "RM_vel", "RB_vel", "LF_vel", "LM_vel", "LB_vel"]
 
 
 @registry.envcfg("NewhexJoystickFlat")
@@ -65,7 +69,7 @@ class JoystickSensor(Sensor):
 class NewhexJoystickFlatCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "scene_flat.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "scene.xml")
         )
     )
     max_episode_seconds: float = 20.0
@@ -145,6 +149,10 @@ class NewhexWalkTask(NewhexBaseEnv):
         self.gait_frequency = 2
         self.feet_force = np.zeros((num_envs, len(cfg.sensor.feet_force), 3), dtype=np.float32)
         self.feet_pos = np.zeros((num_envs, len(cfg.sensor.feet_pos), 3), dtype=np.float32)
+        self.feet_vel = np.zeros((num_envs, len(cfg.sensor.feet_vel), 3), dtype=np.float32)
+        self._last_dof_vel_for_acc = np.zeros(
+            (num_envs, self._num_action), dtype=get_global_dtype()
+        )
 
     def get_playback_model(self, env_index: int | None = None) -> Any:
         return super().get_playback_model(env_index)
@@ -163,8 +171,8 @@ class NewhexWalkTask(NewhexBaseEnv):
 
     @property
     def obs_groups_spec(self) -> dict[str, int]:
-        return {"obs": 75, "critic": 78} 
-    
+        return {"obs": 75, "critic": 78}
+
     def _init_reward_functions(self):
         self._reward_fns: dict[str, Any] = {
             "tracking_lin_vel": rewards.tracking_lin_vel,
@@ -173,17 +181,31 @@ class NewhexWalkTask(NewhexBaseEnv):
             "ang_vel_xy": rewards.ang_vel_xy,
             "base_height": rewards.base_height,
             "action_rate": rewards.action_rate,
+            "torques": rewards.torques,
+            "dof_vel": self._reward_dof_vel,
+            "energy": rewards.energy,
+            "dof_acc": rewards.dof_acc,
             "similar_to_default": rewards.similar_to_default,
             "alive": rewards.alive,
             "orientation": rewards.orientation,
             "swing_feet_z": self._reward_swing_feet_z,
             "contact": self._reward_contact,
+            "contact_forces": self._reward_contact_forces,
+            "feet_slide": self._reward_feet_slide,
             "foot_drag": self._reward_foot_drag,
         }
-    
+
+    def reset(self, env_indices: np.ndarray) -> tuple[dict[str, np.ndarray], dict]:
+        env_ids = np.asarray(env_indices, dtype=np.int32)
+        obs, info = super().reset(env_ids)
+        dof_vel = self.get_dof_vel()
+        if dof_vel.shape[0] == self._num_envs:
+            self._last_dof_vel_for_acc[env_ids] = dof_vel[env_ids]
+        return obs, info
+
     def _compute_terminated(self, gravity: np.ndarray) -> np.ndarray:
         return gravity[:, 2] <= 0.5
-    
+
     def update_state(self, state: NpEnvState) -> NpEnvState:
         self.phase = np.fmod(self.phase + self._cfg.ctrl_dt * self.gait_frequency, 1.0)
         tripod_a = (0, 2, 4)
@@ -203,9 +225,14 @@ class NewhexWalkTask(NewhexBaseEnv):
             self.feet_force[:, i, :] = self._backend.get_sensor_data(self._cfg.sensor.feet_force[i])
         for i in range(len(self._cfg.sensor.feet_pos)):
             self.feet_pos[:, i, :] = self._backend.get_sensor_data(self._cfg.sensor.feet_pos[i])
+        for i in range(len(self._cfg.sensor.feet_vel)):
+            self.feet_vel[:, i, :] = self._backend.get_sensor_data(self._cfg.sensor.feet_vel[i])
+
+        state.info["qacc"] = self._estimate_dof_acc(dof_vel)
+        state.info["torques"] = self._estimate_pd_torques(state.info, dof_pos, dof_vel)
 
         terminated = self._compute_terminated(gravity)
-        reward = self._compute_reward(state.info, linvel, gyro, gravity, dof_pos)
+        reward = self._compute_reward(state.info, linvel, gyro, gravity, dof_pos, dof_vel)
         obs = self._compute_obs(
             state.info, linvel, gyro, gravity, dof_pos, dof_vel, self.feet_phase
         )
@@ -244,7 +271,7 @@ class NewhexWalkTask(NewhexBaseEnv):
         critic = np.concatenate([obs, linvel], axis=1, dtype=get_global_dtype())
         return {"obs": obs, "critic": critic}
 
-    def _compute_reward(self, info: dict, linvel, gyro, gravity, dof_pos) -> np.ndarray:
+    def _compute_reward(self, info: dict, linvel, gyro, gravity, dof_pos, dof_vel) -> np.ndarray:
         cfg = self._reward_cfg
         ctx = RewardContext(
             info=info,
@@ -252,6 +279,7 @@ class NewhexWalkTask(NewhexBaseEnv):
             gyro=gyro,
             gravity=gravity,
             dof_pos=dof_pos,
+            dof_vel=dof_vel,
             num_envs=self._num_envs,
             default_angles=self.default_angles,
             tracking_sigma=cfg.tracking_sigma,
@@ -304,4 +332,40 @@ class NewhexWalkTask(NewhexBaseEnv):
             is_contact = (self.feet_phase[:, i] < 0.6) | (self.gait_frequency < 1.0e-8)
             res += (contact[:, i] == is_contact).astype(np.float32)
         return res / len(self._cfg.sensor.feet_force)
-    
+
+    def _reward_dof_vel(self, ctx: RewardContext) -> np.ndarray:
+        assert ctx.dof_vel is not None
+        return np.sum(np.abs(ctx.dof_vel), axis=1)  # type: ignore[no-any-return]
+
+    def _reward_contact_forces(self, ctx: RewardContext) -> np.ndarray:
+        del ctx
+        force = np.max(np.abs(self.feet_force), axis=2)
+        excess = np.clip(force - self._reward_cfg.contact_forces_threshold, 0.0, None)
+        return np.sum(excess, axis=1)  # type: ignore[no-any-return]
+
+    def _reward_feet_slide(self, ctx: RewardContext) -> np.ndarray:
+        del ctx
+        contact = np.max(np.abs(self.feet_force), axis=2) > 0.1
+        lateral_speed = np.linalg.norm(self.feet_vel[:, :, :2], axis=2)
+        return np.sum(lateral_speed * contact, axis=1)  # type: ignore[no-any-return]
+
+    def _estimate_dof_acc(self, dof_vel: np.ndarray) -> np.ndarray:
+        qacc = np.asarray((dof_vel - self._last_dof_vel_for_acc) / self._cfg.ctrl_dt)
+        self._last_dof_vel_for_acc[:] = dof_vel
+        return np.asarray(qacc, dtype=get_global_dtype())
+
+    def _estimate_pd_torques(
+        self, info: dict, dof_pos: np.ndarray, dof_vel: np.ndarray
+    ) -> np.ndarray:
+        actions = np.asarray(
+            info.get("current_actions", np.zeros((dof_pos.shape[0], self._num_action))),
+            dtype=get_global_dtype(),
+        )
+        if self._cfg.control_config.simulate_action_latency:
+            actions = np.asarray(info.get("last_actions", actions), dtype=get_global_dtype())
+        targets = actions * self._cfg.control_config.action_scale + self.default_angles
+        torques = (
+            float(self._cfg.control_config.Kp) * (targets - dof_pos)
+            - float(self._cfg.control_config.Kd) * dof_vel
+        )
+        return np.asarray(torques, dtype=get_global_dtype())

@@ -82,6 +82,13 @@ class LocomotionDRProvider(DomainRandomizationProvider):
         return build_interval_push_plan(env, step_counter)
 
     def _sample_commands(self, env: Any, num_reset: int) -> np.ndarray:
+        fixed_command = getattr(env.cfg.commands, "fixed_command", None)
+        if fixed_command is not None:
+            command = np.asarray(fixed_command, dtype=get_global_dtype())
+            if command.shape != (3,):
+                raise ValueError(f"commands.fixed_command must have shape (3,), got {command.shape}")
+            return np.broadcast_to(command, (num_reset, 3)).copy()
+
         low = np.asarray(env.cfg.commands.vel_limit[0], dtype=get_global_dtype())
         high = np.asarray(env.cfg.commands.vel_limit[1], dtype=get_global_dtype())
         return np.asarray(

@@ -29,7 +29,7 @@ def test_move_mesh_assets_renames_nested_converter_output(tmp_path: Path) -> Non
     mesh_text = "solid link\nendsolid link\n"
     mesh.write_text(mesh_text, encoding="utf-8")
 
-    mod._move_mesh_assets(robot_dir)
+    mod._move_mesh_assets(robot_dir, robot_dir / "bot.xml")
 
     assert (robot_dir / "assets" / "link.stl").read_text(encoding="utf-8") == mesh_text
     assert not (robot_dir / "meshes").exists()
@@ -96,6 +96,52 @@ def test_postprocess_xml_matches_unilab_robot_asset_shape(tmp_path: Path) -> Non
     assert root.find(".//geom[@class='floor']") is None
 
 
+def test_postprocess_xml_adds_generated_robot_sites_and_sensors(tmp_path: Path) -> None:
+    mod = _load_script()
+    xml_path = tmp_path / "bot.xml"
+    xml_path.write_text(
+        """
+        <mujoco>
+          <worldbody>
+            <body name="base_link">
+              <geom name="base" type="box" size="1 1 1" />
+              <body name="RF_foot_link">
+                <geom name="RF_foot" type="sphere" size="0.1" />
+              </body>
+              <body name="LF_foot_link">
+                <geom name="LF_foot" type="sphere" size="0.1" />
+              </body>
+              <joint name="RF_joint1" type="hinge" />
+              <joint name="LF_joint1" type="hinge" />
+            </body>
+          </worldbody>
+          <actuator>
+            <motor name="LF_joint1" joint="LF_joint1" />
+            <motor name="RF_joint1" joint="RF_joint1" />
+          </actuator>
+        </mujoco>
+        """,
+        encoding="utf-8",
+    )
+
+    mod._postprocess_xml(xml_path)
+
+    root = ET.parse(xml_path).getroot()
+    assert root.find("./worldbody/body/site[@name='imu']").get("rgba") == "1 0 0 1"
+    assert root.find(".//body[@name='RF_foot_link']/site[@name='RF_touch_site']") is not None
+    assert root.find(".//body[@name='LF_foot_link']/site[@name='LF_touch_site']") is not None
+    assert root.find("./actuator/motor") is None
+    assert root.find("./actuator/position[@joint='RF_joint1']") is not None
+    sensor_names = [sensor.get("name") for sensor in root.findall("./sensor/*")]
+    assert sensor_names[:2] == ["gyro", "local_linvel"]
+    assert "RF_1_pos" in sensor_names
+    assert "RF_1_vel" in sensor_names
+    assert "LF_1_pos" in sensor_names
+    assert "RF_foot_contact" in sensor_names
+    assert "RF_pos" in sensor_names
+    assert "RF_vel" in sensor_names
+
+
 def test_convert_urdf_uses_temporary_converter_dependency(tmp_path: Path, monkeypatch: Any) -> None:
     mod = _load_script()
     urdf_path = tmp_path / "bot.urdf"
@@ -123,7 +169,97 @@ def test_convert_urdf_uses_temporary_converter_dependency(tmp_path: Path, monkey
     ]
 
 
-def test_write_scene_xml_creates_only_home_keyframe(tmp_path: Path) -> None:
+def test_preserve_root_link_inertial_restores_urdf_mass_properties(tmp_path: Path) -> None:
+    mod = _load_script()
+    urdf_path = tmp_path / "bot.urdf"
+    xml_path = tmp_path / "bot.xml"
+    urdf_path.write_text(
+        """
+        <robot name="bot">
+          <link name="base_link">
+            <inertial>
+              <origin xyz="0.1 -0.2 0.3" rpy="0 0 1.5707963267948966" />
+              <mass value="12.5" />
+              <inertia ixx="1.1" iyy="2.2" izz="3.3" ixy="0" ixz="0" iyz="0" />
+            </inertial>
+          </link>
+          <link name="leg" />
+          <joint name="hip" type="fixed">
+            <parent link="base_link" />
+            <child link="leg" />
+          </joint>
+        </robot>
+        """,
+        encoding="utf-8",
+    )
+    xml_path.write_text(
+        """
+        <mujoco>
+          <worldbody>
+            <body name="base_link">
+              <freejoint name="floating_base" />
+              <geom name="base_link_collision" type="box" size="1 1 1" />
+            </body>
+          </worldbody>
+        </mujoco>
+        """,
+        encoding="utf-8",
+    )
+
+    mod._preserve_root_link_inertial(urdf_path, xml_path)
+
+    body = ET.parse(xml_path).getroot().find("./worldbody/body")
+    assert body is not None
+    inertial = body.find("./inertial")
+    assert inertial is not None
+    assert list(body).index(inertial) == 1
+    assert inertial.get("pos") == "0.1 -0.2 0.3"
+    assert inertial.get("quat") == "0.70710678 0 0 0.70710678"
+    assert inertial.get("mass") == "12.5"
+    assert inertial.get("diaginertia") == "1.1 2.2 3.3"
+
+
+def test_preserve_root_link_inertial_keeps_full_inertia_tensor(tmp_path: Path) -> None:
+    mod = _load_script()
+    urdf_path = tmp_path / "bot.urdf"
+    xml_path = tmp_path / "bot.xml"
+    urdf_path.write_text(
+        """
+        <robot name="bot">
+          <link name="baselink">
+            <inertial>
+              <mass value="4" />
+              <inertia ixx="1" iyy="2" izz="3" ixy="0.1" ixz="0.2" iyz="0.3" />
+            </inertial>
+          </link>
+        </robot>
+        """,
+        encoding="utf-8",
+    )
+    xml_path.write_text(
+        """
+        <mujoco>
+          <worldbody>
+            <body name="baselink">
+              <inertial mass="1" diaginertia="1 1 1" />
+            </body>
+          </worldbody>
+        </mujoco>
+        """,
+        encoding="utf-8",
+    )
+
+    mod._preserve_root_link_inertial(urdf_path, xml_path)
+
+    inertial = ET.parse(xml_path).getroot().find("./worldbody/body/inertial")
+    assert inertial is not None
+    assert inertial.get("mass") == "4"
+    assert inertial.get("fullinertia") == "1 2 3 0.1 0.2 0.3"
+    assert inertial.get("quat") is None
+    assert inertial.get("diaginertia") is None
+
+
+def test_write_scene_xml_creates_standalone_scene_with_home_keyframe(tmp_path: Path) -> None:
     mod = _load_script()
     robot_xml = tmp_path / "bot.xml"
     scene_xml = tmp_path / "scene.xml"
@@ -153,6 +289,12 @@ def test_write_scene_xml_creates_only_home_keyframe(tmp_path: Path) -> None:
     root = ET.parse(scene_xml).getroot()
     key = root.find("./keyframe/key")
     assert root.get("model") == "bot scene"
+    assert root.find("./include").get("file") == "bot.xml"
+    assert root.find("./default/default[@class='floor']/geom").get("material") == "groundplane"
+    assert root.find("./visual/global").get("offwidth") == "3840"
+    assert root.find("./visual/rgba").get("haze") == "0.15 0.25 0.35 1"
+    assert root.find("./asset/material[@name='groundplane']") is not None
+    assert root.find("./worldbody/geom[@name='floor']").get("class") == "floor"
     assert key is not None
     assert key.get("name") == "home"
     assert key.get("qpos") == "0 0 0.5 1 0 0 0 0 0"

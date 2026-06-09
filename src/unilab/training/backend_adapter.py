@@ -39,11 +39,7 @@ class BackendAdapter:
         """Build play-mode overrides from an optional backend-agnostic play profile."""
         env_cfg_override = self.build_task_env_cfg_override()
         play_profile = getattr(self.cfg, "play_profile", None)
-        if (
-            play_profile is None
-            or not getattr(play_profile, "enabled", False)
-            or not self.cfg.training.play_only
-        ):
+        if play_profile is None or not getattr(play_profile, "enabled", False):
             return env_cfg_override
 
         env_profile = getattr(play_profile, "env", None)
