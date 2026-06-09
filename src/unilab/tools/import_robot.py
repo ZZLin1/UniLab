@@ -560,8 +560,22 @@ def _set_mesh_paths(root: ET.Element) -> None:
 
 
 def _convert_motor_actuators(root: ET.Element) -> None:
-    for actuator in root.findall("./actuator/motor"):
-        actuator.tag = "position"
+    joints_by_name = {
+        joint.get("name"): joint
+        for joint in root.findall(".//joint")
+        if joint.get("name") is not None
+    }
+    for actuator in root.findall("./actuator/*"):
+        if actuator.tag == "motor":
+            actuator.tag = "position"
+        if actuator.tag != "position":
+            continue
+        joint = joints_by_name.get(actuator.get("joint"))
+        joint_range = joint.get("range") if joint is not None else None
+        if joint_range is None:
+            continue
+        actuator.set("ctrlrange", joint_range)
+        actuator.set("ctrllimited", "true")
 
 
 def _ensure_robot_default_joint(root: ET.Element) -> None:

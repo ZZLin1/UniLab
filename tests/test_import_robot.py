@@ -111,8 +111,8 @@ def test_postprocess_xml_adds_generated_robot_sites_and_sensors(tmp_path: Path) 
               <body name="LF_foot_link">
                 <geom name="LF_foot" type="sphere" size="0.1" />
               </body>
-              <joint name="RF_joint1" type="hinge" />
-              <joint name="LF_joint1" type="hinge" />
+              <joint name="RF_joint1" type="hinge" range="-6.28 6.28" />
+              <joint name="LF_joint1" type="hinge" range="-3.14 3.14" />
             </body>
           </worldbody>
           <actuator>
@@ -131,7 +131,10 @@ def test_postprocess_xml_adds_generated_robot_sites_and_sensors(tmp_path: Path) 
     assert root.find(".//body[@name='RF_foot_link']/site[@name='RF_touch_site']") is not None
     assert root.find(".//body[@name='LF_foot_link']/site[@name='LF_touch_site']") is not None
     assert root.find("./actuator/motor") is None
-    assert root.find("./actuator/position[@joint='RF_joint1']") is not None
+    rf_actuator = root.find("./actuator/position[@joint='RF_joint1']")
+    assert rf_actuator is not None
+    assert rf_actuator.get("ctrlrange") == "-6.28 6.28"
+    assert rf_actuator.get("ctrllimited") == "true"
     sensor_names = [sensor.get("name") for sensor in root.findall("./sensor/*")]
     assert sensor_names[:2] == ["gyro", "local_linvel"]
     assert "RF_1_pos" in sensor_names
