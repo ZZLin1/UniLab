@@ -181,6 +181,7 @@ urdf导出xml, 需要在mujoco中调整kryframe的高度
 ```bash
 uv run unilab-import-robot <‘urdf路径’> newhex
 ```
+在mujoco页面下截个图
 
 记录urdf名称与newhex名称
 
@@ -191,5 +192,5 @@ uv run unilab-import-robot <‘urdf路径’> newhex
 uv run train --algo ppo --task newhex_joystick_flat --sim motrix
 ```
 
-记录训练logs的目录与urdf名称，newhex名称相匹配
+记录训练logs的目录名与urdf名称，newhex名称相匹配（把urdf和截图放在训练后的log下）
 

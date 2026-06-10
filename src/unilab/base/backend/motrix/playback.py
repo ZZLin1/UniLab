@@ -26,9 +26,8 @@ def run_motrix_playback(
     headless: bool,
     record_video: bool,
     camera_kwargs: dict[str, Any] | None,
-    extra_data_getter: Callable[[], np.ndarray | None] | None = None,
+    extra_data_getter: Callable[[], Any | None] | None = None,
 ) -> str | None:
-    del extra_data_getter
     if record_video and not headless:
         raise ValueError("Motrix video recording requires headless=true.")
 
@@ -57,6 +56,8 @@ def run_motrix_playback(
         frames: list[np.ndarray] | None = [] if record_video else None
         for _ in range(num_steps):
             obs = step(obs)
+            if extra_data_getter is not None and hasattr(backend, "set_render_marker_positions"):
+                backend.set_render_marker_positions(extra_data_getter())
             frame = np.asarray(backend.capture_video_frame(), dtype=np.uint8)
             if frames is not None:
                 frames.append(frame.copy())
@@ -88,6 +89,8 @@ def run_motrix_playback(
 
     while num_steps is None or steps_run < num_steps:
         obs = step(obs)
+        if extra_data_getter is not None and hasattr(backend, "set_render_marker_positions"):
+            backend.set_render_marker_positions(extra_data_getter())
         current_time = time.perf_counter()
         elapsed = current_time - last_render_time
         if elapsed < render_dt:

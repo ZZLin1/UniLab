@@ -27,7 +27,7 @@ def run_mujoco_playback(
     record_video: bool,
     frame_state_getter: Callable[[], np.ndarray] | None,
     camera_kwargs: dict[str, Any] | None,
-    extra_data_getter: Callable[[], np.ndarray | None] | None = None,
+    extra_data_getter: Callable[[], Any | None] | None = None,
 ) -> str | None:
     if not headless:
         raise NotImplementedError("MuJoCo play mode does not support interactive rendering here.")
@@ -48,10 +48,7 @@ def run_mujoco_playback(
         obs = step(obs)
         state_list.append(np.asarray(frame_state_getter(), dtype=np.float32).copy())
         if extra_data_getter is not None:
-            marker = extra_data_getter()
-            marker_list.append(
-                np.asarray(marker, dtype=np.float32).copy() if marker is not None else None
-            )
+            marker_list.append(_marker_positions_from_extra_data(extra_data_getter()))
         else:
             marker_list.append(None)
 
@@ -108,6 +105,17 @@ def run_mujoco_playback(
     ctrl_dt = float(env_cfg_value(env, "ctrl_dt", 1.0 / 60.0))
     media.write_video(str(output_video), frames, fps=int(1.0 / ctrl_dt))
     return str(output_video)
+
+
+def _marker_positions_from_extra_data(extra_data: Any | None) -> np.ndarray | None:
+    if extra_data is None:
+        return None
+    marker_positions = (
+        extra_data.get("marker_positions") if isinstance(extra_data, dict) else extra_data
+    )
+    if marker_positions is None:
+        return None
+    return np.asarray(marker_positions, dtype=np.float32).copy()
 
 
 def _configured_model_file(env: Any) -> str | None:

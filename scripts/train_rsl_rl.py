@@ -181,6 +181,15 @@ def _resolve_play_num_steps(cfg: DictConfig) -> int | None:
     return int(play_steps)
 
 
+def _playback_extra_data_getter(env: Any):
+    getter = getattr(env, "get_playback_extra_data", None)
+    if callable(getter):
+        return getter
+    if hasattr(env, "curr_ee_goal_world"):
+        return lambda: getattr(env, "curr_ee_goal_world", None)
+    return None
+
+
 def play_rsl_rl(cfg: DictConfig, device: str) -> str | None:
     """Play mode for RSL-RL."""
     rl_cfg = _algo_config_dict(cfg)
@@ -262,11 +271,7 @@ def play_rsl_rl(cfg: DictConfig, device: str) -> str | None:
                     "cam_tracking_extra_envs": getattr(cfg.training, "cam_tracking_extra_envs", 2),
                 },
                 on_plan=_log_plan,
-                extra_data_getter=(
-                    (lambda: getattr(env, "curr_ee_goal_world", None))
-                    if hasattr(env, "curr_ee_goal_world")
-                    else None
-                ),
+                extra_data_getter=_playback_extra_data_getter(env),
             )
     except Exception as e:
         if cfg.training.sim_backend == "motrix" and "RenderClosedError" in str(type(e).__name__):

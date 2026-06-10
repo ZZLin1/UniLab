@@ -142,6 +142,7 @@ class MotrixBackend(SimBackend):
         add_body_sensors: bool = False,
         max_iterations: int | None = DEFAULT_MOTRIX_MAX_ITERATIONS,
         push_body_name: str | None = None,
+        position_actuator_gains: dict | None = None,
     ):
         if not MOTRIX_AVAILABLE:
             raise ImportError("motrixsim not available")
@@ -200,6 +201,10 @@ class MotrixBackend(SimBackend):
             # TODO: switch to motrixsim model-level actuator gain API once available.
             self._default_actuator_kp[idx] = _first_scalar(actuator.get_kp_override(self._data))
             self._default_actuator_kd[idx] = _first_scalar(actuator.get_kd_override(self._data))
+        self._configured_actuator_kp: np.ndarray | None = None
+        self._configured_actuator_kd: np.ndarray | None = None
+        if position_actuator_gains is not None:
+            self._apply_position_actuator_gains(**position_actuator_gains)
         self._floating_base_quat_indices: tuple[np.ndarray, ...] = tuple(
             np.asarray(floating_base.dof_pos_indices[3:7], dtype=np.intp)
             for floating_base in getattr(self._model, "floating_bases", [])
@@ -256,6 +261,9 @@ class MotrixBackend(SimBackend):
         self._render_headless: bool | None = None
         self._render_capture_enabled = False
         self._render_offsets_np: np.ndarray | None = None
+        self._render_marker_positions: np.ndarray | None = None
+        self._render_box_centers: np.ndarray | None = None
+        self._render_box_sizes: np.ndarray | None = None
         self._render_tracking_camera: MotrixTrackingCamera | None = None
         self.backend_type = "motrix"
         self._link_velocity_cache: np.ndarray | None = None
@@ -573,6 +581,7 @@ class MotrixBackend(SimBackend):
         self._clear_applied_body_forces(env_indices)
         self._apply_init_geom_size_overrides(data_slice, env_indices)
         self._apply_reset_randomization(data_slice, env_indices, randomization)
+        self._apply_configured_position_actuator_gains(data_slice, len(env_indices), randomization)
         data_slice.set_dof_vel(qvel)
         data_slice.set_dof_pos(qpos_motrix, self._model)
 
@@ -727,7 +736,7 @@ class MotrixBackend(SimBackend):
         camera_kwargs: dict[str, Any] | None = None,
         extra_data_getter=None,
     ) -> str | None:
-        del frame_state_getter, extra_data_getter
+        del frame_state_getter
         should_record_video = (
             bool(record_video) if record_video is not None else output_video is not None
         )
@@ -745,6 +754,7 @@ class MotrixBackend(SimBackend):
                 headless=should_run_headless,
                 record_video=should_record_video,
                 camera_kwargs=camera_kwargs,
+                extra_data_getter=extra_data_getter,
             )
         except Exception as e:
             if (
@@ -1253,7 +1263,107 @@ class MotrixBackend(SimBackend):
         self._assert_render_context_available(headless=False, capture=False)
         assert self._render_app is not None
         self._update_tracking_camera_view()
+        self._draw_render_markers()
         self._render_app.sync(data=self._data)
+
+    def set_render_marker_positions(self, marker_positions: Any | None) -> None:
+        if marker_positions is None:
+            self._render_marker_positions = None
+            self._render_box_centers = None
+            self._render_box_sizes = None
+            return
+        if isinstance(marker_positions, dict):
+            self.set_render_overlay(
+                marker_positions=marker_positions.get("marker_positions"),
+                box_centers=marker_positions.get("box_centers"),
+                box_sizes=marker_positions.get("box_sizes"),
+            )
+            return
+        markers = np.asarray(marker_positions, dtype=np.float32)
+        if markers.shape != (self._num_envs, 3):
+            raise ValueError(
+                f"render marker positions must have shape ({self._num_envs}, 3), got {markers.shape}"
+            )
+        self._render_marker_positions = markers.copy()
+        self._render_box_centers = None
+        self._render_box_sizes = None
+
+    def set_render_overlay(
+        self,
+        *,
+        marker_positions: np.ndarray | None = None,
+        box_centers: np.ndarray | None = None,
+        box_sizes: np.ndarray | None = None,
+    ) -> None:
+        self._render_marker_positions = self._normalize_render_points(
+            marker_positions,
+            name="marker_positions",
+        )
+        self._render_box_centers = self._normalize_render_points(
+            box_centers,
+            name="box_centers",
+        )
+        if box_sizes is None:
+            self._render_box_sizes = None
+            return
+        sizes = np.asarray(box_sizes, dtype=np.float32)
+        if sizes.shape == (3,):
+            sizes = np.broadcast_to(sizes, (self._num_envs, 3))
+        if sizes.shape != (self._num_envs, 3):
+            raise ValueError(
+                f"render box sizes must have shape (3,) or ({self._num_envs}, 3), got {sizes.shape}"
+            )
+        self._render_box_sizes = sizes.copy()
+
+    def _normalize_render_points(
+        self,
+        points: np.ndarray | None,
+        *,
+        name: str,
+    ) -> np.ndarray | None:
+        if points is None:
+            return None
+        values = np.asarray(points, dtype=np.float32)
+        if values.shape != (self._num_envs, 3):
+            raise ValueError(
+                f"render {name} must have shape ({self._num_envs}, 3), got {values.shape}"
+            )
+        return values.copy()
+
+    def _draw_render_markers(self) -> None:
+        if self._render_app is None:
+            return
+        offsets = self._render_offsets_np
+        if offsets is None:
+            offsets = np.zeros((self._num_envs, 3), dtype=np.float32)
+        from motrixsim.render import Color
+
+        marker_color = Color.rgb(1.0, 0.2, 0.1)
+        box_color = Color.rgb(0.1, 0.6, 1.0)
+        if self._render_box_centers is not None and self._render_box_sizes is not None:
+            for center, size, offset in zip(
+                self._render_box_centers,
+                self._render_box_sizes,
+                offsets,
+                strict=False,
+            ):
+                pos = np.asarray(center, dtype=np.float32).copy()
+                pos[:2] += np.asarray(offset[:2], dtype=np.float32)
+                pos_values = [float(pos[0]), float(pos[1]), float(pos[2])]
+                size_values = [float(size[0]), float(size[1]), float(size[2])]
+                self._render_app.gizmos.draw_cuboid(
+                    size_values,
+                    pos_values,
+                    [0.0, 0.0, 0.0, 1.0],
+                    box_color,
+                )
+        if self._render_marker_positions is None:
+            return
+        for marker_pos, offset in zip(self._render_marker_positions, offsets, strict=False):
+            pos = np.asarray(marker_pos, dtype=np.float32).copy()
+            pos[:2] += np.asarray(offset[:2], dtype=np.float32)
+            pos_values = [float(pos[0]), float(pos[1]), float(pos[2])]
+            self._render_app.gizmos.draw_sphere(0.035, pos_values, marker_color)
 
     def capture_video_frame(self) -> np.ndarray:
         """Capture one RGB frame from Motrix's system camera."""
@@ -1264,6 +1374,7 @@ class MotrixBackend(SimBackend):
         assert self._render_app is not None
 
         self._update_tracking_camera_view()
+        self._draw_render_markers()
         task = self._render_app.system_camera.capture()
         self._render_app.sync(data=self._data, wait=True)
         image = task.take_image()
@@ -1403,9 +1514,112 @@ class MotrixBackend(SimBackend):
                 np.ascontiguousarray(kd[:, int(actuator.index)]),
             )
 
+    def _actuator_ids_from_selector(self, actuator_ids: Any) -> np.ndarray:
+        all_ids = np.arange(self.num_actuators, dtype=np.intp)
+        if isinstance(actuator_ids, slice):
+            return all_ids[actuator_ids]
+        if isinstance(actuator_ids, (int, np.integer)):
+            return np.asarray([int(actuator_ids)], dtype=np.intp)
+        selector = list(actuator_ids) if not isinstance(actuator_ids, np.ndarray) else actuator_ids
+        if len(selector) > 0 and isinstance(selector[0], str):
+            by_name = {
+                str(getattr(actuator, "name", "")): int(actuator.index)
+                for actuator in self._model.actuators
+            }
+            missing = [name for name in selector if str(name) not in by_name]
+            if missing:
+                raise ValueError(f"Motrix actuator names not found: {', '.join(map(str, missing))}")
+            return np.asarray([by_name[str(name)] for name in selector], dtype=np.intp)
+        return all_ids[np.asarray(selector)]
+
+    def _assign_position_actuator_gain(
+        self,
+        base: np.ndarray,
+        actuator_ids: np.ndarray,
+        value: float | Sequence[float] | np.ndarray,
+        *,
+        name: str,
+    ) -> np.ndarray:
+        result = np.asarray(base, dtype=np.float32).copy()
+        values = np.asarray(value, dtype=np.float32)
+        if values.ndim == 0:
+            result[actuator_ids] = float(values)
+            return result
+        if values.shape == (self.num_actuators,):
+            result[actuator_ids] = values[actuator_ids]
+            return result
+        if values.shape == (len(actuator_ids),):
+            result[actuator_ids] = values
+            return result
+        raise ValueError(
+            f"position_actuator_gains.{name} must be scalar, shape ({self.num_actuators},), "
+            f"or shape ({len(actuator_ids)},); got {values.shape}"
+        )
+
+    def _apply_position_actuator_gains(
+        self,
+        *,
+        kp: float | Sequence[float] | np.ndarray | None = None,
+        kd: float | Sequence[float] | np.ndarray | None = None,
+        actuator_ids: Any = slice(None),
+    ) -> None:
+        if not self._supports_position_actuator_gains:
+            raise NotImplementedError(
+                "Motrix position_actuator_gains requires all actuators to be position actuators"
+            )
+        ids = self._actuator_ids_from_selector(actuator_ids)
+        if kp is not None:
+            self._configured_actuator_kp = self._assign_position_actuator_gain(
+                self._default_actuator_kp,
+                ids,
+                kp,
+                name="kp",
+            )
+            self._set_position_actuator_kp_override(
+                self._data,
+                np.broadcast_to(self._configured_actuator_kp, (self._num_envs, self.num_actuators)),
+            )
+        if kd is not None:
+            self._configured_actuator_kd = self._assign_position_actuator_gain(
+                self._default_actuator_kd,
+                ids,
+                kd,
+                name="kd",
+            )
+            self._set_position_actuator_kd_override(
+                self._data,
+                np.broadcast_to(self._configured_actuator_kd, (self._num_envs, self.num_actuators)),
+            )
+
+    def _apply_configured_position_actuator_gains(
+        self,
+        data_slice,
+        num_reset: int,
+        randomization: ResetRandomizationPayload | None,
+    ) -> None:
+        if self._configured_actuator_kp is not None and (
+            randomization is None or randomization.kp is None
+        ):
+            self._set_position_actuator_kp_override(
+                data_slice,
+                np.broadcast_to(self._configured_actuator_kp, (num_reset, self.num_actuators)),
+            )
+        if self._configured_actuator_kd is not None and (
+            randomization is None or randomization.kd is None
+        ):
+            self._set_position_actuator_kd_override(
+                data_slice,
+                np.broadcast_to(self._configured_actuator_kd, (num_reset, self.num_actuators)),
+            )
+
     def get_actuator_gains(self) -> tuple[np.ndarray, np.ndarray]:
         if not self._supports_position_actuator_gains:
             raise NotImplementedError(
                 "Motrix actuator gains are only exposed for all-position-actuator models"
             )
-        return self._default_actuator_kp.copy(), self._default_actuator_kd.copy()
+        kp = self._configured_actuator_kp
+        kd = self._configured_actuator_kd
+        return (
+            (self._default_actuator_kp if kp is None else kp).copy(),
+            (self._default_actuator_kd if kd is None else kd).copy(),
+        )
