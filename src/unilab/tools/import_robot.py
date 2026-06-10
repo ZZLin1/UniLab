@@ -1098,10 +1098,11 @@ def convert(urdf_path: str, robot_name: str | None) -> Path:
     _preserve_root_link_inertial(urdf, output_xml)
     _move_mesh_assets(robot_dir, output_xml)
     _postprocess_xml(output_xml)
-    _write_scene_xml(output_xml, robot_dir / "scene.xml", name)
+    scene_xml = robot_dir / "scene.xml"
+    _write_scene_xml(output_xml, scene_xml, name)
 
     print(f"[unilab-import-robot] wrote {output_xml.relative_to(REPO_ROOT)}", flush=True)
-    _tune_scene_keyframe(output_xml, robot_dir / "scene.xml")
+    _tune_scene_keyframe(output_xml, scene_xml)
     return output_xml
 
 
