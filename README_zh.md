@@ -190,6 +190,7 @@ uv run unilab-import-robot <‘urdf路径’> newhex
 训练
 ```bash
 uv run train --algo ppo --task newhex_joystick_flat --sim motrix
+uv run train --algo ppo --task newhex_rf_touch --sim motrix
 ```
 
 记录训练logs的目录名与urdf名称，newhex名称相匹配（把urdf和截图放在训练后的log下）
