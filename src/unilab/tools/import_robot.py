@@ -937,7 +937,7 @@ def _materialize_tuning_scene(
     scene_xml: Path,
     *,
     add_height_joint: bool = True,
-    height_range: tuple[float, float] = (-1.0, 1.0),
+    height_range: tuple[float, float] = (0, 2.0),
 ) -> Path:
     from unilab.base.backend.mujoco.xml import materialize_scene_fragments
 
