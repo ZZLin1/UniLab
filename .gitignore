@@ -38,6 +38,7 @@ htmlcov/
 .kiro/
 
 # Project specific
+src/unilab/assets/robots/newhex
 logs/
 runs/
 run_config.json
