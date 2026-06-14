@@ -73,7 +73,7 @@ class RFTouchSensor(Sensor):
 class NewhexRFTouchCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex0" / "scene.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "g000_p036" / "scene.xml")
         )
     )
     max_episode_seconds: float = 10.0
@@ -92,7 +92,7 @@ class NewhexRFTouchDRProvider(DomainRandomizationProvider):
         num_reset = len(env_ids)
         qpos = np.tile(env._init_qpos, (num_reset, 1))
         qvel = np.tile(env._init_qvel, (num_reset, 1))
-        qpos[:, 0:3] = np.asarray(env.cfg.init_state.pos, dtype=get_global_dtype())
+        qpos[:, 0:2] = np.asarray(env.cfg.init_state.pos[:2], dtype=get_global_dtype())
 
         env._sample_targets(env_ids, qpos[:, 0:2])
         info_updates: dict[str, Any] = {

@@ -195,3 +195,5 @@ uv run train --algo ppo --task newhex_rf_touch --sim motrix
 
 记录训练logs的目录名与urdf名称，newhex名称相匹配（把urdf和截图放在训练后的log下）
 
+uv run unilab-import-robot  g000_p0
+
