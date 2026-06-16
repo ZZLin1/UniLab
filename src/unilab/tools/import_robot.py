@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Iterable, Sequence, cast
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-ROBOT_ASSET_ROOT = REPO_ROOT / "src" / "unilab" / "assets" / "robots"
+ROBOT_ASSET_ROOT = REPO_ROOT / "src" / "unilab" / "assets" / "robots" / "newhex"
 TEMP_MESH_PREFIX = "meshes/meshes/"
 DEFAULT_MATERIAL = "default_material"
 IMU_SITE = "imu"
