@@ -45,7 +45,7 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--end", type=int, default=49, help="Last numeric suffix to run, inclusive.")
     parser.add_argument(
         "--name-template",
-        default="g002_o{index:03d}",
+        default="g041_o{index:03d}",
         help="Robot directory template. Use {index} for the numeric suffix.",
     )
     parser.add_argument(

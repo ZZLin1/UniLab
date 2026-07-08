@@ -175,6 +175,229 @@ uv run train --algo ppo --task sharpa_inhand --sim mujoco --profile hora
 ```
 
 
+## 多机器人 eval
+
+本节用于在一个 Motrix 窗口中可视化多个不同 Newhex 机器人。当前实现放在
+`experiments/newhex_hetero_motrix_grid/` 下，不会修改正常训练、eval、任务配置或机器人
+XML。流程分为三步：
+
+1. 生成机器人-策略清单 manifest。
+2. 把这些机器人的 `scene.xml` 合并成一个可视化场景。
+3. 用每个机器人自己的 PPO 策略驱动合并场景。
+
+默认示例使用 `experiments/high_fitness_offspring_names.csv` 中列出的 36 个机器人，站成
+`6 x 6` 方阵。CSV 至少需要包含一列 `name`，内容形如 `g006_o007`。
+
+### 前置检查
+
+请确认以下文件/目录已经存在：
+
+```bash
+ls experiments/high_fitness_offspring_names.csv
+ls logs/rsl_rl_ppo/NewhexJoystickFlat
+ls logs/rsl_rl_ppo/NewhexRFTouch
+ls src/unilab/assets/robots/newhex
+```
+
+每个机器人需要同时满足：
+
+- `src/unilab/assets/robots/newhex/<robot_name>/scene.xml` 存在。
+- 对应任务的策略目录存在，例如
+  `logs/rsl_rl_ppo/NewhexJoystickFlat/g006_o/g006_o007/model_*.pt`。
+
+如果策略目录仍是日期名，先运行重命名脚本：
+
+```bash
+uv run scripts/rename_policy_run_dirs.py --start-generation 40 --apply
+```
+
+`--start-generation` 按实际需要修改。
+
+### 生成 Joystick Manifest
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/run.py \
+  --mode manifest \
+  --names-csv experiments/high_fitness_offspring_names.csv \
+  --rows 6 \
+  --cols 6 \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --policy-log-root logs/rsl_rl_ppo/NewhexJoystickFlat
+```
+
+输出文件：
+
+```text
+experiments/newhex_hetero_motrix_grid/selected_robots.csv
+```
+
+### 生成 RF Touch Manifest
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/run.py \
+  --mode manifest \
+  --names-csv experiments/high_fitness_offspring_names.csv \
+  --rows 6 \
+  --cols 6 \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_rf_touch_robots.csv \
+  --policy-log-root logs/rsl_rl_ppo/NewhexRFTouch
+```
+
+输出文件：
+
+```text
+experiments/newhex_hetero_motrix_grid/selected_rf_touch_robots.csv
+```
+
+### 生成合并场景
+
+Joystick 和 RF Touch 使用同一批机器人 XML，所以只需要一个合并场景：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/merge_scene.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --count 36 \
+  --rows 6 \
+  --cols 6 \
+  --output experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml \
+  --validate \
+  --validate-motrix
+```
+
+输出文件：
+
+```text
+experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml
+```
+
+`--validate` 会用 MuJoCo 加载生成的 XML；`--validate-motrix` 会用 Motrix 加载生成的
+XML。二者都通过后再运行策略可视化。
+
+### 静态预览场景
+
+这一步只检查 36 个机器人是否都站在正确位置，不加载策略：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/preview_scene.py \
+  --scene experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml \
+  --lookat 5 -5 0.8 \
+  --distance 12
+```
+
+关闭 Motrix 窗口即可退出。
+
+### Joystick 可视化
+
+先做一次不打开窗口的加载检查：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml \
+  --check-only
+```
+
+通过后打开 Motrix 可视化窗口：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml \
+  --velocity 1.0 \
+  --lookat 5 -5 0.8 \
+  --distance 12
+```
+
+说明：
+
+- 每个机器人加载自己的 `NewhexJoystickFlat` PPO 策略。
+- `--velocity 1.0` 表示前向速度命令为 `1m/s`。
+- 脚本会把每个机器人的初始朝向对齐到同一世界方向，避免 reset yaw 随机导致方阵朝不同方向移动。
+
+### RF Touch 可视化
+
+RF Touch 使用原始 `NewhexRFTouch` env 的 reset/target sampling 规则。脚本只覆盖 episode
+最长时间，默认 `--episode-seconds 3.0`，即每 3 秒左右按任务 reset 规则重新采样目标。
+
+先做一次不打开窗口的加载检查：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_rf_touch_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_rf_touch_robots.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/hetero_36_scene.xml \
+  --check-only
+```
+
+通过后打开 Motrix 可视化窗口：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_locomotion.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/top36_locomotion_scene.xml \
+  --lookat 5 -5 0.8 \
+  --distance 12
+```
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_rf_touch_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_manipulation.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/top36_manipulation_scene.xml \
+  --episode-seconds 3.0 \
+  --lookat 5 -5 0.8 \
+  --distance 12
+```
+
+说明：
+
+- 每个机器人加载自己的 `NewhexRFTouch` PPO 策略。
+- 目标点采样范围来自 `conf/ppo/task/newhex_rf_touch/motrix.yaml` 中的
+  `env.target_sampling`，也就是实际训练配置。
+- 如果想改变每个 episode 的最长时间，可以修改 `--episode-seconds`。
+
+### 少量机器人快速测试
+
+如果只想先测试 5 个机器人，可以复用同一个流程，把 `--count/--rows/--cols/output` 改小：
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/merge_scene.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --count 5 \
+  --rows 1 \
+  --cols 5 \
+  --output experiments/newhex_hetero_motrix_grid/generated/hetero_5_scene.xml \
+  --validate \
+  --validate-motrix
+```
+
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/selected_robots.csv \
+  --count 5 \
+  --cols 5 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/hetero_5_scene.xml
+```
+
+### 常见问题
+
+- `manifest does not exist`：先运行对应的 `run.py --mode manifest` 命令。
+- `merged scene does not exist`：先运行 `merge_scene.py` 生成 `hetero_36_scene.xml`。
+- `could not find policy+scene pairs`：检查机器人 XML 是否存在，策略目录是否已经重命名为
+  `gNNN_o/gNNN_oXXX`。
+- Motrix 窗口关闭后程序退出是正常行为。
+
+
+
+
 ### Work for LYF
 
 urdf导出xml, 需要在mujoco中调整kryframe的高度
@@ -193,7 +416,11 @@ uv run train --algo ppo --task newhex_joystick_flat --sim motrix
 uv run train --algo ppo --task newhex_rf_touch --sim motrix
 ```
 
-记录训练logs的目录名与urdf名称，newhex名称相匹配（把urdf和截图放在训练后的log下）
+uv run scripts/import_generation_offspring_urdfs.py
 
-uv run unilab-import-robot  g002_o0
+更改两个sweep的序号
 
+uv run scripts/sweep_newhex_joystick_then_rf_touch.py
+
+
+uv run scripts/rename_policy_run_dirs.py --start-generation 40 --apply

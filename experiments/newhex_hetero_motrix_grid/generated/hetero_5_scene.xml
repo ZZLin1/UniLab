@@ -1,0 +1,1147 @@
+<mujoco model="newhex_heterogeneous_grid">
+  <compiler angle="radian"/>
+
+  <visual>
+    <global offwidth="3840" offheight="2160"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+  </visual>
+
+  <default>
+    <default class="floor">
+      <geom size="0 0 0.05" type="plane" material="groundplane"/>
+    </default>
+    <default class="g031_o027/main">
+      <default class="g031_o027/robot">
+        <joint armature="0.01" damping="2" frictionloss="0.2"/>
+        <default class="g031_o027/visual">
+          <geom contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="g031_o027/collision">
+          <geom contype="0" group="3"/>
+        </default>
+      </default>
+      <default class="g031_o027/floor">
+        <geom size="0 0 0.05" type="plane" material="groundplane"/>
+      </default>
+    </default>
+    <default class="g034_o022/main">
+      <default class="g034_o022/robot">
+        <joint armature="0.01" damping="2" frictionloss="0.2"/>
+        <default class="g034_o022/visual">
+          <geom contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="g034_o022/collision">
+          <geom contype="0" group="3"/>
+        </default>
+      </default>
+      <default class="g034_o022/floor">
+        <geom size="0 0 0.05" type="plane" material="groundplane"/>
+      </default>
+    </default>
+    <default class="g003_o015/main">
+      <default class="g003_o015/robot">
+        <joint armature="0.01" damping="2" frictionloss="0.2"/>
+        <default class="g003_o015/visual">
+          <geom contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="g003_o015/collision">
+          <geom contype="0" group="3"/>
+        </default>
+      </default>
+      <default class="g003_o015/floor">
+        <geom size="0 0 0.05" type="plane" material="groundplane"/>
+      </default>
+    </default>
+    <default class="g021_o010/main">
+      <default class="g021_o010/robot">
+        <joint armature="0.01" damping="2" frictionloss="0.2"/>
+        <default class="g021_o010/visual">
+          <geom contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="g021_o010/collision">
+          <geom contype="0" group="3"/>
+        </default>
+      </default>
+      <default class="g021_o010/floor">
+        <geom size="0 0 0.05" type="plane" material="groundplane"/>
+      </default>
+    </default>
+    <default class="g039_o040/main">
+      <default class="g039_o040/robot">
+        <joint armature="0.01" damping="2" frictionloss="0.2"/>
+        <default class="g039_o040/visual">
+          <geom contype="0" conaffinity="0" group="2"/>
+        </default>
+        <default class="g039_o040/collision">
+          <geom contype="0" group="3"/>
+        </default>
+      </default>
+      <default class="g039_o040/floor">
+        <geom size="0 0 0.05" type="plane" material="groundplane"/>
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <texture type="2d" colorspace="sRGB" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="10 10" reflectance="0.2"/>
+    <material name="g031_o027/blue" rgba="0 0 0.8 1"/>
+    <material name="g031_o027/red" rgba="0.8 0 0 1"/>
+    <material name="g031_o027/grey" rgba="0.7 0.7 0.7 1"/>
+    <material name="g034_o022/blue" rgba="0 0 0.8 1"/>
+    <material name="g034_o022/red" rgba="0.8 0 0 1"/>
+    <material name="g034_o022/grey" rgba="0.7 0.7 0.7 1"/>
+    <material name="g003_o015/blue" rgba="0 0 0.8 1"/>
+    <material name="g003_o015/red" rgba="0.8 0 0 1"/>
+    <material name="g003_o015/grey" rgba="0.7 0.7 0.7 1"/>
+    <material name="g021_o010/blue" rgba="0 0 0.8 1"/>
+    <material name="g021_o010/red" rgba="0.8 0 0 1"/>
+    <material name="g021_o010/grey" rgba="0.7 0.7 0.7 1"/>
+    <material name="g039_o040/blue" rgba="0 0 0.8 1"/>
+    <material name="g039_o040/red" rgba="0.8 0 0 1"/>
+    <material name="g039_o040/grey" rgba="0.7 0.7 0.7 1"/>
+  </asset>
+
+  <worldbody>
+    <geom name="floor" class="floor"/>
+    <light pos="0 0 5" dir="0 0 -1" type="directional"/>
+    <body name="g031_o027/base_link" childclass="g031_o027/robot" pos="0 0 0.7311">
+      <inertial pos="0 0 0" mass="28" diaginertia="0.0166667 0.0166667 0.0166667"/>
+      <joint name="g031_o027/floating_base" type="free" armature="0" damping="0" frictionloss="0"/>
+      <geom name="g031_o027/base_link_collision_0" class="g031_o027/collision" size="0.05 0.15 0.05" pos="0.05 0 0" type="box"/>
+      <geom name="g031_o027/base_link_collision_1" class="g031_o027/collision" size="0.45 0.15 0.05" pos="-0.45 0 0" type="box"/>
+      <geom name="g031_o027/base_link_collision_2" class="g031_o027/collision" size="0.05 0.2 0.05" type="box"/>
+      <geom name="g031_o027/base_link_visual_0" class="g031_o027/visual" size="0.05 0.15 0.05" pos="0.05 0 0" type="box" material="g031_o027/grey"/>
+      <geom name="g031_o027/base_link_visual_1" class="g031_o027/visual" size="0.45 0.15 0.05" pos="-0.45 0 0" type="box" material="g031_o027/grey"/>
+      <geom name="g031_o027/base_link_visual_2" class="g031_o027/visual" size="0.05 0.2 0.05" type="box" material="g031_o027/grey"/>
+      <site name="g031_o027/imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <body name="g031_o027/LF_link1" pos="0.1 0.15 0" quat="0.707407 0 0.706807 0">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/LF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/LF_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/LF_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/LF_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/LF_link2" pos="0.1 0 0" quat="0.000800007 -0.707107 -0.000300003 -0.707107">
+          <inertial pos="0 0 0" mass="1.8198" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/LF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/LF_link2_collision" class="g031_o027/collision" size="0.015 0.254951" pos="0.25 0 0.05" quat="0.77332 0 0.634016 0" type="cylinder"/>
+          <geom name="g031_o027/LF_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/LF_link2_visual_1" class="g031_o027/visual" size="0.015 0.254951" pos="0.25 0 0.05" quat="0.77332 0 0.634016 0" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/LF_link3" pos="0.5 0 0.1" quat="0.183499 0.183399 -0.683196 0.682596">
+            <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/LF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/LF_link3_collision" class="g031_o027/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g031_o027/LF_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/LF_link3_visual_1" class="g031_o027/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/LF_link4" pos="0.3 0 0" quat="0.5004 -0.5 0.4996 -0.5">
+              <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g031_o027/LF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g031_o027/LF_link4_collision" class="g031_o027/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+              <geom name="g031_o027/LF_link4_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+              <geom name="g031_o027/LF_link4_visual_1" class="g031_o027/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+              <body name="g031_o027/LF_foot_link" pos="0.4 0 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g031_o027/LF_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+                <geom name="g031_o027/LF_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+                <site name="g031_o027/LF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g031_o027/LM_link1" pos="0 0.2 0" quat="0.612708 -0.353505 0.612208 0.353305">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/LM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/LM_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/LM_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/LM_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/LM_link2" pos="0.1 0 0" quat="0.612708 -0.612208 -0.353505 -0.353305">
+          <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/LM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/LM_link2_collision" class="g031_o027/collision" size="0.015 0.180278" pos="0 0.15 0.1" quat="0.62341 -0.333706 0.333706 0.62341" type="cylinder"/>
+          <geom name="g031_o027/LM_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/LM_link2_visual_1" class="g031_o027/visual" size="0.015 0.180278" pos="0 0.15 0.1" quat="0.62341 -0.333706 0.333706 0.62341" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/LM_link3" pos="0 0.3 0.2" quat="0.965961 0 0 0.258689">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/LM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/LM_link3_collision" class="g031_o027/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g031_o027/LM_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/LM_link3_visual_1" class="g031_o027/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/LM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g031_o027/LM_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+              <geom name="g031_o027/LM_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+              <site name="g031_o027/LM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g031_o027/LB_link1" pos="-0.9 0.15 0" quat="0.612708 -0.353505 0.612208 0.353305">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/LB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/LB_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/LB_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/LB_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/LB_link2" pos="0.1 0 0" quat="0.612708 -0.612208 -0.353505 -0.353305">
+          <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/LB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/LB_link2_collision" class="g031_o027/collision" size="0.015 0.180278" pos="0 0.15 0.1" quat="0.62341 -0.333706 0.333706 0.62341" type="cylinder"/>
+          <geom name="g031_o027/LB_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/LB_link2_visual_1" class="g031_o027/visual" size="0.015 0.180278" pos="0 0.15 0.1" quat="0.62341 -0.333706 0.333706 0.62341" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/LB_link3" pos="0 0.3 0.2" quat="0.965961 0 0 0.258689">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/LB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/LB_link3_collision" class="g031_o027/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g031_o027/LB_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/LB_link3_visual_1" class="g031_o027/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/LB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g031_o027/LB_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+              <geom name="g031_o027/LB_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+              <site name="g031_o027/LB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g031_o027/RF_link1" pos="0.1 -0.15 0" quat="0.707407 0 0.706807 0">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/RF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/RF_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/RF_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/RF_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/RF_link2" pos="0.1 0 0" quat="0.000800007 0.707107 -0.000300003 0.707107">
+          <inertial pos="0 0 0" mass="1.8198" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/RF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/RF_link2_collision" class="g031_o027/collision" size="0.015 0.254951" pos="0.25 0 0.05" quat="0.77332 0 0.634016 0" type="cylinder"/>
+          <geom name="g031_o027/RF_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/RF_link2_visual_1" class="g031_o027/visual" size="0.015 0.254951" pos="0.25 0 0.05" quat="0.77332 0 0.634016 0" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/RF_link3" pos="0.5 0 0.1" quat="0.183499 -0.183399 -0.683196 -0.682596">
+            <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/RF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/RF_link3_collision" class="g031_o027/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g031_o027/RF_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/RF_link3_visual_1" class="g031_o027/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/RF_link4" pos="0.3 0 0" quat="0.5004 0.5 0.4996 0.5">
+              <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g031_o027/RF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g031_o027/RF_link4_collision" class="g031_o027/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+              <geom name="g031_o027/RF_link4_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+              <geom name="g031_o027/RF_link4_visual_1" class="g031_o027/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+              <body name="g031_o027/RF_foot_link" pos="0.4 0 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g031_o027/RF_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+                <geom name="g031_o027/RF_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+                <site name="g031_o027/RF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g031_o027/RM_link1" pos="0 -0.2 0" quat="0.612708 0.353505 0.612208 -0.353305">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/RM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/RM_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/RM_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/RM_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/RM_link2" pos="0.1 0 0" quat="0.612708 0.612208 -0.353505 0.353305">
+          <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/RM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/RM_link2_collision" class="g031_o027/collision" size="0.015 0.180278" pos="0 -0.15 0.1" quat="0.62341 0.333706 0.333706 -0.62341" type="cylinder"/>
+          <geom name="g031_o027/RM_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/RM_link2_visual_1" class="g031_o027/visual" size="0.015 0.180278" pos="0 -0.15 0.1" quat="0.62341 0.333706 0.333706 -0.62341" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/RM_link3" pos="0 -0.3 0.2" quat="0.965961 0 0 -0.258689">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/RM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/RM_link3_collision" class="g031_o027/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g031_o027/RM_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/RM_link3_visual_1" class="g031_o027/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/RM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g031_o027/RM_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+              <geom name="g031_o027/RM_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+              <site name="g031_o027/RM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g031_o027/RB_link1" pos="-0.9 -0.15 0" quat="0.612708 0.353505 0.612208 -0.353305">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g031_o027/RB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g031_o027/RB_link1_collision" class="g031_o027/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g031_o027/RB_link1_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+        <geom name="g031_o027/RB_link1_visual_1" class="g031_o027/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g031_o027/blue"/>
+        <body name="g031_o027/RB_link2" pos="0.1 0 0" quat="0.612708 0.612208 -0.353505 0.353305">
+          <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g031_o027/RB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g031_o027/RB_link2_collision" class="g031_o027/collision" size="0.015 0.180278" pos="0 -0.15 0.1" quat="0.62341 0.333706 0.333706 -0.62341" type="cylinder"/>
+          <geom name="g031_o027/RB_link2_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+          <geom name="g031_o027/RB_link2_visual_1" class="g031_o027/visual" size="0.015 0.180278" pos="0 -0.15 0.1" quat="0.62341 0.333706 0.333706 -0.62341" type="cylinder" material="g031_o027/blue"/>
+          <body name="g031_o027/RB_link3" pos="0 -0.3 0.2" quat="0.965961 0 0 -0.258689">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g031_o027/RB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g031_o027/RB_link3_collision" class="g031_o027/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g031_o027/RB_link3_visual_0" class="g031_o027/visual" size="0.044 0.03" type="cylinder" material="g031_o027/red"/>
+            <geom name="g031_o027/RB_link3_visual_1" class="g031_o027/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g031_o027/blue"/>
+            <body name="g031_o027/RB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g031_o027/RB_foot_link_collision" class="g031_o027/collision" size="0.025"/>
+              <geom name="g031_o027/RB_foot_link_visual" class="g031_o027/visual" size="0.025" material="g031_o027/grey"/>
+              <site name="g031_o027/RB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="g034_o022/base_link" childclass="g034_o022/robot" pos="2 0 0.3143">
+      <inertial pos="0 0 0" mass="18.4" diaginertia="0.0166667 0.0166667 0.0166667"/>
+      <joint name="g034_o022/floating_base" type="free" armature="0" damping="0" frictionloss="0"/>
+      <geom name="g034_o022/base_link_collision_0" class="g034_o022/collision" size="0.15 0.1 0.05" pos="0.15 0 0" type="box"/>
+      <geom name="g034_o022/base_link_collision_1" class="g034_o022/collision" size="0.2 0.1 0.05" pos="-0.2 0 0" type="box"/>
+      <geom name="g034_o022/base_link_collision_2" class="g034_o022/collision" size="0.05 0.3 0.05" type="box"/>
+      <geom name="g034_o022/base_link_visual_0" class="g034_o022/visual" size="0.15 0.1 0.05" pos="0.15 0 0" type="box" material="g034_o022/grey"/>
+      <geom name="g034_o022/base_link_visual_1" class="g034_o022/visual" size="0.2 0.1 0.05" pos="-0.2 0 0" type="box" material="g034_o022/grey"/>
+      <geom name="g034_o022/base_link_visual_2" class="g034_o022/visual" size="0.05 0.3 0.05" type="box" material="g034_o022/grey"/>
+      <site name="g034_o022/imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <body name="g034_o022/LF_link1" pos="0.3 0.1 0" quat="0.682975 0.182593 -0.683275 -0.182593">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/LF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/LF_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/LF_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/LF_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/LF_link2" pos="0.1 0 0" quat="0.612238 -0.612138 0.354222 0.353522">
+          <inertial pos="0 0 0" mass="1.43246" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/LF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/LF_link2_collision" class="g034_o022/collision" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder"/>
+          <geom name="g034_o022/LF_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/LF_link2_visual_1" class="g034_o022/visual" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/LF_link3" pos="0.1 0 0.3" quat="0.183499 0.183399 0.683196 -0.682596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/LF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/LF_link3_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g034_o022/LF_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/LF_link3_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/LF_link4" pos="0.5 0 0" quat="0.5004 0.4996 0.5 -0.5">
+              <inertial pos="0 0 0" mass="1.69443" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g034_o022/LF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g034_o022/LF_link4_collision" class="g034_o022/collision" size="0.015 0.223607" pos="0.2 0 0.1" quat="0.850678 0 0.525687 0" type="cylinder"/>
+              <geom name="g034_o022/LF_link4_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+              <geom name="g034_o022/LF_link4_visual_1" class="g034_o022/visual" size="0.015 0.223607" pos="0.2 0 0.1" quat="0.850678 0 0.525687 0" type="cylinder" material="g034_o022/blue"/>
+              <body name="g034_o022/LF_foot_link" pos="0.4 0 0.2">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g034_o022/LF_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+                <geom name="g034_o022/LF_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+                <site name="g034_o022/LF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g034_o022/LM_link1" pos="0 0.3 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/LM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/LM_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/LM_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/LM_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/LM_link2" pos="0.1 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/LM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/LM_link2_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.15 0.2 0" quat="0.632476 -0.316188 0.632476 0.316188" type="cylinder"/>
+          <geom name="g034_o022/LM_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/LM_link2_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.15 0.2 0" quat="0.632476 -0.316188 0.632476 0.316188" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/LM_link3" pos="0.3 0.4 0" quat="0.866156 0 0 -0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/LM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/LM_link3_collision" class="g034_o022/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g034_o022/LM_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/LM_link3_visual_1" class="g034_o022/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/LM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g034_o022/LM_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+              <geom name="g034_o022/LM_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+              <site name="g034_o022/LM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g034_o022/LB_link1" pos="-0.4 0.1 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/LB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/LB_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/LB_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/LB_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/LB_link2" pos="0.1 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/LB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/LB_link2_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.15 0.2 0" quat="0.632476 -0.316188 0.632476 0.316188" type="cylinder"/>
+          <geom name="g034_o022/LB_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/LB_link2_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.15 0.2 0" quat="0.632476 -0.316188 0.632476 0.316188" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/LB_link3" pos="0.3 0.4 0" quat="0.866156 0 0 -0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/LB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/LB_link3_collision" class="g034_o022/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g034_o022/LB_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/LB_link3_visual_1" class="g034_o022/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/LB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g034_o022/LB_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+              <geom name="g034_o022/LB_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+              <site name="g034_o022/LB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g034_o022/RF_link1" pos="0.3 -0.1 0" quat="0.682975 -0.182593 -0.683275 0.182593">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/RF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/RF_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/RF_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/RF_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/RF_link2" pos="0.1 0 0" quat="0.612238 0.612138 0.354222 -0.353522">
+          <inertial pos="0 0 0" mass="1.43246" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/RF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/RF_link2_collision" class="g034_o022/collision" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder"/>
+          <geom name="g034_o022/RF_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/RF_link2_visual_1" class="g034_o022/visual" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/RF_link3" pos="0.1 0 0.3" quat="0.183499 -0.183399 0.683196 0.682596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/RF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/RF_link3_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g034_o022/RF_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/RF_link3_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/RF_link4" pos="0.5 0 0" quat="0.5004 -0.4996 0.5 0.5">
+              <inertial pos="0 0 0" mass="1.69443" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g034_o022/RF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g034_o022/RF_link4_collision" class="g034_o022/collision" size="0.015 0.223607" pos="0.2 0 0.1" quat="0.850678 0 0.525687 0" type="cylinder"/>
+              <geom name="g034_o022/RF_link4_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+              <geom name="g034_o022/RF_link4_visual_1" class="g034_o022/visual" size="0.015 0.223607" pos="0.2 0 0.1" quat="0.850678 0 0.525687 0" type="cylinder" material="g034_o022/blue"/>
+              <body name="g034_o022/RF_foot_link" pos="0.4 0 0.2">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g034_o022/RF_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+                <geom name="g034_o022/RF_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+                <site name="g034_o022/RF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g034_o022/RM_link1" pos="0 -0.3 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/RM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/RM_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/RM_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/RM_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/RM_link2" pos="0.1 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/RM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/RM_link2_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.15 -0.2 0" quat="0.632476 0.316188 0.632476 -0.316188" type="cylinder"/>
+          <geom name="g034_o022/RM_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/RM_link2_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.15 -0.2 0" quat="0.632476 0.316188 0.632476 -0.316188" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/RM_link3" pos="0.3 -0.4 0" quat="0.866156 0 0 0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/RM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/RM_link3_collision" class="g034_o022/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g034_o022/RM_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/RM_link3_visual_1" class="g034_o022/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/RM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g034_o022/RM_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+              <geom name="g034_o022/RM_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+              <site name="g034_o022/RM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g034_o022/RB_link1" pos="-0.4 -0.1 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g034_o022/RB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g034_o022/RB_link1_collision" class="g034_o022/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g034_o022/RB_link1_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+        <geom name="g034_o022/RB_link1_visual_1" class="g034_o022/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g034_o022/blue"/>
+        <body name="g034_o022/RB_link2" pos="0.1 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g034_o022/RB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g034_o022/RB_link2_collision" class="g034_o022/collision" size="0.015 0.25" pos="0.15 -0.2 0" quat="0.632476 0.316188 0.632476 -0.316188" type="cylinder"/>
+          <geom name="g034_o022/RB_link2_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+          <geom name="g034_o022/RB_link2_visual_1" class="g034_o022/visual" size="0.015 0.25" pos="0.15 -0.2 0" quat="0.632476 0.316188 0.632476 -0.316188" type="cylinder" material="g034_o022/blue"/>
+          <body name="g034_o022/RB_link3" pos="0.3 -0.4 0" quat="0.866156 0 0 0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g034_o022/RB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g034_o022/RB_link3_collision" class="g034_o022/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g034_o022/RB_link3_visual_0" class="g034_o022/visual" size="0.044 0.03" type="cylinder" material="g034_o022/red"/>
+            <geom name="g034_o022/RB_link3_visual_1" class="g034_o022/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g034_o022/blue"/>
+            <body name="g034_o022/RB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g034_o022/RB_foot_link_collision" class="g034_o022/collision" size="0.025"/>
+              <geom name="g034_o022/RB_foot_link_visual" class="g034_o022/visual" size="0.025" material="g034_o022/grey"/>
+              <site name="g034_o022/RB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="g003_o015/base_link" childclass="g003_o015/robot" pos="4 0 0.2748">
+      <inertial pos="0 0 0" mass="19.6" diaginertia="0.0166667 0.0166667 0.0166667"/>
+      <joint name="g003_o015/floating_base" type="free" armature="0" damping="0" frictionloss="0"/>
+      <geom name="g003_o015/base_link_collision_0" class="g003_o015/collision" size="0.1 0.2 0.05" pos="0.1 0 0" type="box"/>
+      <geom name="g003_o015/base_link_collision_1" class="g003_o015/collision" size="0.1 0.2 0.05" pos="-0.1 0 0" type="box"/>
+      <geom name="g003_o015/base_link_collision_2" class="g003_o015/collision" size="0.05 0.35 0.05" type="box"/>
+      <geom name="g003_o015/base_link_visual_0" class="g003_o015/visual" size="0.1 0.2 0.05" pos="0.1 0 0" type="box" material="g003_o015/grey"/>
+      <geom name="g003_o015/base_link_visual_1" class="g003_o015/visual" size="0.1 0.2 0.05" pos="-0.1 0 0" type="box" material="g003_o015/grey"/>
+      <geom name="g003_o015/base_link_visual_2" class="g003_o015/visual" size="0.05 0.35 0.05" type="box" material="g003_o015/grey"/>
+      <site name="g003_o015/imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <body name="g003_o015/LF_link1" pos="0.2 0.2 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/LF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/LF_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/LF_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/LF_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/LF_link2" pos="0.1 0 0" quat="0.612708 0.612208 0.353305 0.353505">
+          <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/LF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/LF_link2_collision" class="g003_o015/collision" size="0.015 0.206155" pos="0.1 0.15 0.1" quat="0.75972 -0.239406 0.447412 0.406611" type="cylinder"/>
+          <geom name="g003_o015/LF_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/LF_link2_visual_1" class="g003_o015/visual" size="0.015 0.206155" pos="0.1 0.15 0.1" quat="0.75972 -0.239406 0.447412 0.406611" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/LF_link3" pos="0.2 0.3 0.2" quat="0.707407 -0.706807 0 0">
+            <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/LF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/LF_link3_collision" class="g003_o015/collision" size="0.015 0.15" pos="0 0.15 0" quat="0.5 -0.5 0.5 0.5" type="cylinder"/>
+            <geom name="g003_o015/LF_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/LF_link3_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0 0.15 0" quat="0.5 -0.5 0.5 0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/LF_link4" pos="0 0.3 0" quat="0.707407 0 0 -0.706807">
+              <inertial pos="0 0 0" mass="1.96619" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g003_o015/LF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g003_o015/LF_link4_collision" class="g003_o015/collision" size="0.015 0.291548" pos="0.25 0.15 0" quat="0.681387 -0.188796 0.681487 0.188796" type="cylinder"/>
+              <geom name="g003_o015/LF_link4_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+              <geom name="g003_o015/LF_link4_visual_1" class="g003_o015/visual" size="0.015 0.291548" pos="0.25 0.15 0" quat="0.681387 -0.188796 0.681487 0.188796" type="cylinder" material="g003_o015/blue"/>
+              <body name="g003_o015/LF_foot_link" pos="0.5 0.3 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g003_o015/LF_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+                <geom name="g003_o015/LF_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+                <site name="g003_o015/LF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g003_o015/LM_link1" pos="0 0.35 0" quat="0.000699964 -0.000399979 -0.499774 0.866155">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/LM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/LM_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/LM_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/LM_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/LM_link2" pos="0.1 0 0" quat="0.707407 0.706807 0 0">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/LM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/LM_link2_collision" class="g003_o015/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g003_o015/LM_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/LM_link2_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/LM_link3" pos="0.3 0 0" quat="0.000799967 0.258689 -0.000199992 0.96596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/LM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/LM_link3_collision" class="g003_o015/collision" size="0.015 0.25" pos="0 0.25 0" quat="0.5 -0.5 0.5 0.5" type="cylinder"/>
+            <geom name="g003_o015/LM_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/LM_link3_visual_1" class="g003_o015/visual" size="0.015 0.25" pos="0 0.25 0" quat="0.5 -0.5 0.5 0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/LM_foot_link" pos="0 0.5 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g003_o015/LM_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+              <geom name="g003_o015/LM_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+              <site name="g003_o015/LM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g003_o015/LB_link1" pos="-0.2 0.2 0" quat="0.000699964 -0.000399979 -0.499774 0.866155">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/LB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/LB_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/LB_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/LB_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/LB_link2" pos="0.1 0 0" quat="0.707407 0.706807 0 0">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/LB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/LB_link2_collision" class="g003_o015/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g003_o015/LB_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/LB_link2_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/LB_link3" pos="0.3 0 0" quat="0.000799967 0.258689 -0.000199992 0.96596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/LB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/LB_link3_collision" class="g003_o015/collision" size="0.015 0.25" pos="0 0.25 0" quat="0.5 -0.5 0.5 0.5" type="cylinder"/>
+            <geom name="g003_o015/LB_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/LB_link3_visual_1" class="g003_o015/visual" size="0.015 0.25" pos="0 0.25 0" quat="0.5 -0.5 0.5 0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/LB_foot_link" pos="0 0.5 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g003_o015/LB_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+              <geom name="g003_o015/LB_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+              <site name="g003_o015/LB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g003_o015/RF_link1" pos="0.2 -0.2 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/RF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/RF_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/RF_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/RF_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/RF_link2" pos="0.1 0 0" quat="0.612708 -0.612208 0.353305 -0.353505">
+          <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/RF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/RF_link2_collision" class="g003_o015/collision" size="0.015 0.206155" pos="0.1 -0.15 0.1" quat="0.75972 0.239406 0.447412 -0.406611" type="cylinder"/>
+          <geom name="g003_o015/RF_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/RF_link2_visual_1" class="g003_o015/visual" size="0.015 0.206155" pos="0.1 -0.15 0.1" quat="0.75972 0.239406 0.447412 -0.406611" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/RF_link3" pos="0.2 -0.3 0.2" quat="0.707407 0.706807 0 0">
+            <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/RF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/RF_link3_collision" class="g003_o015/collision" size="0.015 0.15" pos="0 -0.15 0" quat="0.5 0.5 0.5 -0.5" type="cylinder"/>
+            <geom name="g003_o015/RF_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/RF_link3_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0 -0.15 0" quat="0.5 0.5 0.5 -0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/RF_link4" pos="0 -0.3 0" quat="0.707407 0 0 0.706807">
+              <inertial pos="0 0 0" mass="1.96619" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g003_o015/RF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g003_o015/RF_link4_collision" class="g003_o015/collision" size="0.015 0.291548" pos="0.25 -0.15 0" quat="0.681387 0.188796 0.681487 -0.188796" type="cylinder"/>
+              <geom name="g003_o015/RF_link4_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+              <geom name="g003_o015/RF_link4_visual_1" class="g003_o015/visual" size="0.015 0.291548" pos="0.25 -0.15 0" quat="0.681387 0.188796 0.681487 -0.188796" type="cylinder" material="g003_o015/blue"/>
+              <body name="g003_o015/RF_foot_link" pos="0.5 -0.3 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g003_o015/RF_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+                <geom name="g003_o015/RF_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+                <site name="g003_o015/RF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g003_o015/RM_link1" pos="0 -0.35 0" quat="0.000699964 0.000399979 -0.499774 -0.866155">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/RM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/RM_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/RM_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/RM_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/RM_link2" pos="0.1 0 0" quat="0.707407 -0.706807 0 0">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/RM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/RM_link2_collision" class="g003_o015/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g003_o015/RM_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/RM_link2_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/RM_link3" pos="0.3 0 0" quat="0.000799967 -0.258689 -0.000199992 -0.96596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/RM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/RM_link3_collision" class="g003_o015/collision" size="0.015 0.25" pos="0 -0.25 0" quat="0.5 0.5 0.5 -0.5" type="cylinder"/>
+            <geom name="g003_o015/RM_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/RM_link3_visual_1" class="g003_o015/visual" size="0.015 0.25" pos="0 -0.25 0" quat="0.5 0.5 0.5 -0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/RM_foot_link" pos="0 -0.5 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g003_o015/RM_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+              <geom name="g003_o015/RM_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+              <site name="g003_o015/RM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g003_o015/RB_link1" pos="-0.2 -0.2 0" quat="0.000699964 0.000399979 -0.499774 -0.866155">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g003_o015/RB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g003_o015/RB_link1_collision" class="g003_o015/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g003_o015/RB_link1_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+        <geom name="g003_o015/RB_link1_visual_1" class="g003_o015/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+        <body name="g003_o015/RB_link2" pos="0.1 0 0" quat="0.707407 -0.706807 0 0">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g003_o015/RB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g003_o015/RB_link2_collision" class="g003_o015/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g003_o015/RB_link2_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+          <geom name="g003_o015/RB_link2_visual_1" class="g003_o015/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g003_o015/blue"/>
+          <body name="g003_o015/RB_link3" pos="0.3 0 0" quat="0.000799967 -0.258689 -0.000199992 -0.96596">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g003_o015/RB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g003_o015/RB_link3_collision" class="g003_o015/collision" size="0.015 0.25" pos="0 -0.25 0" quat="0.5 0.5 0.5 -0.5" type="cylinder"/>
+            <geom name="g003_o015/RB_link3_visual_0" class="g003_o015/visual" size="0.044 0.03" type="cylinder" material="g003_o015/red"/>
+            <geom name="g003_o015/RB_link3_visual_1" class="g003_o015/visual" size="0.015 0.25" pos="0 -0.25 0" quat="0.5 0.5 0.5 -0.5" type="cylinder" material="g003_o015/blue"/>
+            <body name="g003_o015/RB_foot_link" pos="0 -0.5 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g003_o015/RB_foot_link_collision" class="g003_o015/collision" size="0.025"/>
+              <geom name="g003_o015/RB_foot_link_visual" class="g003_o015/visual" size="0.025" material="g003_o015/grey"/>
+              <site name="g003_o015/RB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="g021_o010/base_link" childclass="g021_o010/robot" pos="6 0 0.5767">
+      <inertial pos="0 0 0" mass="31" diaginertia="0.0166667 0.0166667 0.0166667"/>
+      <joint name="g021_o010/floating_base" type="free" armature="0" damping="0" frictionloss="0"/>
+      <geom name="g021_o010/base_link_collision_0" class="g021_o010/collision" size="0.15 0.25 0.05" pos="0.15 0 0" type="box"/>
+      <geom name="g021_o010/base_link_collision_1" class="g021_o010/collision" size="0.2 0.25 0.05" pos="-0.2 0 0" type="box"/>
+      <geom name="g021_o010/base_link_collision_2" class="g021_o010/collision" size="0.05 0.2 0.05" type="box"/>
+      <geom name="g021_o010/base_link_visual_0" class="g021_o010/visual" size="0.15 0.25 0.05" pos="0.15 0 0" type="box" material="g021_o010/grey"/>
+      <geom name="g021_o010/base_link_visual_1" class="g021_o010/visual" size="0.2 0.25 0.05" pos="-0.2 0 0" type="box" material="g021_o010/grey"/>
+      <geom name="g021_o010/base_link_visual_2" class="g021_o010/visual" size="0.05 0.2 0.05" type="box" material="g021_o010/grey"/>
+      <site name="g021_o010/imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <body name="g021_o010/LF_link1" pos="0.3 0.25 0" quat="0.5004 -0.5 -0.4996 0.5">
+        <inertial pos="0 0 0" mass="1.43246" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/LF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/LF_link1_collision" class="g021_o010/collision" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder"/>
+        <geom name="g021_o010/LF_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/LF_link1_visual_1" class="g021_o010/visual" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/LF_link2" pos="0.1 0 0.3" quat="0.612238 -0.612138 0.354222 0.353522">
+          <inertial pos="0 0 0" mass="1.14641" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/LF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/LF_link2_collision" class="g021_o010/collision" size="0.015 0.0866025" pos="0.05 0.05 0.05" quat="0.820474 -0.175894 0.424687 0.339889" type="cylinder"/>
+          <geom name="g021_o010/LF_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/LF_link2_visual_1" class="g021_o010/visual" size="0.015 0.0866025" pos="0.05 0.05 0.05" quat="0.820474 -0.175894 0.424687 0.339889" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/LF_link3" pos="0.1 0.1 0.1" quat="0.612708 0.612208 -0.353505 0.353305">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/LF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/LF_link3_collision" class="g021_o010/collision" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g021_o010/LF_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/LF_link3_visual_1" class="g021_o010/visual" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/LF_link4" pos="0.5 0 0" quat="0.866156 0 0 -0.499774">
+              <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g021_o010/LF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g021_o010/LF_link4_collision" class="g021_o010/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+              <geom name="g021_o010/LF_link4_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+              <geom name="g021_o010/LF_link4_visual_1" class="g021_o010/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+              <body name="g021_o010/LF_foot_link" pos="0.4 0 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g021_o010/LF_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+                <geom name="g021_o010/LF_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+                <site name="g021_o010/LF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g021_o010/LM_link1" pos="0 0.2 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/LM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/LM_link1_collision" class="g021_o010/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g021_o010/LM_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/LM_link1_visual_1" class="g021_o010/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/LM_link2" pos="0.1 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/LM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/LM_link2_collision" class="g021_o010/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g021_o010/LM_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/LM_link2_visual_1" class="g021_o010/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/LM_link3" pos="0.3 0 0" quat="0.866156 0 0 -0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/LM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/LM_link3_collision" class="g021_o010/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g021_o010/LM_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/LM_link3_visual_1" class="g021_o010/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/LM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g021_o010/LM_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+              <geom name="g021_o010/LM_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+              <site name="g021_o010/LM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g021_o010/LB_link1" pos="-0.4 0.25 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/LB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/LB_link1_collision" class="g021_o010/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g021_o010/LB_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/LB_link1_visual_1" class="g021_o010/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/LB_link2" pos="0.1 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/LB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/LB_link2_collision" class="g021_o010/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g021_o010/LB_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/LB_link2_visual_1" class="g021_o010/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/LB_link3" pos="0.3 0 0" quat="0.866156 0 0 -0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/LB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/LB_link3_collision" class="g021_o010/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g021_o010/LB_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/LB_link3_visual_1" class="g021_o010/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/LB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g021_o010/LB_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+              <geom name="g021_o010/LB_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+              <site name="g021_o010/LB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g021_o010/RF_link1" pos="0.3 -0.25 0" quat="0.5004 0.5 -0.4996 -0.5">
+        <inertial pos="0 0 0" mass="1.43246" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/RF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/RF_link1_collision" class="g021_o010/collision" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder"/>
+        <geom name="g021_o010/RF_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/RF_link1_visual_1" class="g021_o010/visual" size="0.015 0.158114" pos="0.05 0 0.15" quat="0.987085 0 0.160198 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/RF_link2" pos="0.1 0 0.3" quat="0.612238 0.612138 0.354222 -0.353522">
+          <inertial pos="0 0 0" mass="1.14641" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/RF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/RF_link2_collision" class="g021_o010/collision" size="0.015 0.0866025" pos="0.05 -0.05 0.05" quat="0.820474 0.175894 0.424687 -0.339889" type="cylinder"/>
+          <geom name="g021_o010/RF_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/RF_link2_visual_1" class="g021_o010/visual" size="0.015 0.0866025" pos="0.05 -0.05 0.05" quat="0.820474 0.175894 0.424687 -0.339889" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/RF_link3" pos="0.1 -0.1 0.1" quat="0.612708 -0.612208 -0.353505 -0.353305">
+            <inertial pos="0 0 0" mass="1.8" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/RF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/RF_link3_collision" class="g021_o010/collision" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g021_o010/RF_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/RF_link3_visual_1" class="g021_o010/visual" size="0.015 0.25" pos="0.25 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/RF_link4" pos="0.5 0 0" quat="0.866156 0 0 0.499774">
+              <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g021_o010/RF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g021_o010/RF_link4_collision" class="g021_o010/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+              <geom name="g021_o010/RF_link4_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+              <geom name="g021_o010/RF_link4_visual_1" class="g021_o010/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+              <body name="g021_o010/RF_foot_link" pos="0.4 0 0">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g021_o010/RF_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+                <geom name="g021_o010/RF_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+                <site name="g021_o010/RF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g021_o010/RM_link1" pos="0 -0.2 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/RM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/RM_link1_collision" class="g021_o010/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g021_o010/RM_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/RM_link1_visual_1" class="g021_o010/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/RM_link2" pos="0.1 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/RM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/RM_link2_collision" class="g021_o010/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g021_o010/RM_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/RM_link2_visual_1" class="g021_o010/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/RM_link3" pos="0.3 0 0" quat="0.866156 0 0 0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/RM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/RM_link3_collision" class="g021_o010/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g021_o010/RM_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/RM_link3_visual_1" class="g021_o010/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/RM_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g021_o010/RM_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+              <geom name="g021_o010/RM_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+              <site name="g021_o010/RM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g021_o010/RB_link1" pos="-0.4 -0.25 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g021_o010/RB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g021_o010/RB_link1_collision" class="g021_o010/collision" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g021_o010/RB_link1_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+        <geom name="g021_o010/RB_link1_visual_1" class="g021_o010/visual" size="0.015 0.05" pos="0.05 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+        <body name="g021_o010/RB_link2" pos="0.1 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.4" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g021_o010/RB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g021_o010/RB_link2_collision" class="g021_o010/collision" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g021_o010/RB_link2_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+          <geom name="g021_o010/RB_link2_visual_1" class="g021_o010/visual" size="0.015 0.15" pos="0.15 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g021_o010/blue"/>
+          <body name="g021_o010/RB_link3" pos="0.3 0 0" quat="0.866156 0 0 0.499774">
+            <inertial pos="0 0 0" mass="1.62462" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g021_o010/RB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g021_o010/RB_link3_collision" class="g021_o010/collision" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder"/>
+            <geom name="g021_o010/RB_link3_visual_0" class="g021_o010/visual" size="0.044 0.03" type="cylinder" material="g021_o010/red"/>
+            <geom name="g021_o010/RB_link3_visual_1" class="g021_o010/visual" size="0.015 0.206155" pos="0.2 0 0.05" quat="0.788209 0 0.615407 0" type="cylinder" material="g021_o010/blue"/>
+            <body name="g021_o010/RB_foot_link" pos="0.4 0 0.1">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g021_o010/RB_foot_link_collision" class="g021_o010/collision" size="0.025"/>
+              <geom name="g021_o010/RB_foot_link_visual" class="g021_o010/visual" size="0.025" material="g021_o010/grey"/>
+              <site name="g021_o010/RB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+    <body name="g039_o040/base_link" childclass="g039_o040/robot" pos="8 0 0.4713">
+      <inertial pos="0 0 0" mass="23.2" diaginertia="0.0166667 0.0166667 0.0166667"/>
+      <joint name="g039_o040/floating_base" type="free" armature="0" damping="0" frictionloss="0"/>
+      <geom name="g039_o040/base_link_collision_0" class="g039_o040/collision" size="0.4 0.1 0.05" pos="0.4 0 0" type="box"/>
+      <geom name="g039_o040/base_link_collision_1" class="g039_o040/collision" size="0.15 0.1 0.05" pos="-0.15 0 0" type="box"/>
+      <geom name="g039_o040/base_link_collision_2" class="g039_o040/collision" size="0.05 0.2 0.05" type="box"/>
+      <geom name="g039_o040/base_link_visual_0" class="g039_o040/visual" size="0.4 0.1 0.05" pos="0.4 0 0" type="box" material="g039_o040/grey"/>
+      <geom name="g039_o040/base_link_visual_1" class="g039_o040/visual" size="0.15 0.1 0.05" pos="-0.15 0 0" type="box" material="g039_o040/grey"/>
+      <geom name="g039_o040/base_link_visual_2" class="g039_o040/visual" size="0.05 0.2 0.05" type="box" material="g039_o040/grey"/>
+      <site name="g039_o040/imu" pos="0 0 0" size="0.01" rgba="1 0 0 1"/>
+      <body name="g039_o040/LF_link1" pos="0.8 0.1 0" quat="0.683293 -0.182998 -0.182798 0.682793">
+        <inertial pos="0 0 0" mass="1.08284" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/LF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/LF_link1_collision" class="g039_o040/collision" size="0.015 0.0707105" pos="0.05 0 0.05" quat="0.923877 0 0.38269 0" type="cylinder"/>
+        <geom name="g039_o040/LF_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/LF_link1_visual_1" class="g039_o040/visual" size="0.015 0.0707105" pos="0.05 0 0.05" quat="0.923877 0 0.38269 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/LF_link2" pos="0.1 0 0.1" quat="0.682975 -0.182593 0.683275 -0.182593">
+          <inertial pos="0 0 0" mass="1.8198" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/LF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/LF_link2_collision" class="g039_o040/collision" size="0.015 0.254951" pos="0.05 0 0.25" quat="0.995137 0 0.0985036 0" type="cylinder"/>
+          <geom name="g039_o040/LF_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/LF_link2_visual_1" class="g039_o040/visual" size="0.015 0.254951" pos="0.05 0 0.25" quat="0.995137 0 0.0985036 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/LF_link3" pos="0.1 0 0.5" quat="0.683293 0.682793 0.182998 -0.182798">
+            <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/LF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/LF_link3_collision" class="g039_o040/collision" size="0.015 0.180278" pos="0.1 0.15 0" quat="0.62341 -0.333706 0.62341 0.333706" type="cylinder"/>
+            <geom name="g039_o040/LF_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/LF_link3_visual_1" class="g039_o040/visual" size="0.015 0.180278" pos="0.1 0.15 0" quat="0.62341 -0.333706 0.62341 0.333706" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/LF_link4" pos="0.2 0.3 0" quat="0.683238 -0.499928 0.499728 -0.18311">
+              <inertial pos="0 0 0" mass="1.64853" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g039_o040/LF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g039_o040/LF_link4_collision" class="g039_o040/collision" size="0.015 0.212132" pos="0.15 0 0.15" quat="0.923877 0 0.38269 0" type="cylinder"/>
+              <geom name="g039_o040/LF_link4_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+              <geom name="g039_o040/LF_link4_visual_1" class="g039_o040/visual" size="0.015 0.212132" pos="0.15 0 0.15" quat="0.923877 0 0.38269 0" type="cylinder" material="g039_o040/blue"/>
+              <body name="g039_o040/LF_foot_link" pos="0.3 0 0.3">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g039_o040/LF_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+                <geom name="g039_o040/LF_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+                <site name="g039_o040/LF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g039_o040/LM_link1" pos="0 0.2 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/LM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/LM_link1_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g039_o040/LM_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/LM_link1_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/LM_link2" pos="0.4 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.2" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/LM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/LM_link2_collision" class="g039_o040/collision" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g039_o040/LM_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/LM_link2_visual_1" class="g039_o040/visual" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/LM_link3" pos="0.2 0 0" quat="0.965961 0 0 -0.258689">
+            <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/LM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/LM_link3_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g039_o040/LM_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/LM_link3_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/LM_foot_link" pos="0.4 0 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g039_o040/LM_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+              <geom name="g039_o040/LM_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+              <site name="g039_o040/LM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g039_o040/LB_link1" pos="-0.3 0.1 0" quat="0.707407 0 0 0.706807">
+        <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/LB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/LB_link1_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g039_o040/LB_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/LB_link1_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/LB_link2" pos="0.4 0 0" quat="0.683293 0.682793 0.182998 -0.182798">
+          <inertial pos="0 0 0" mass="1.2" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/LB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/LB_link2_collision" class="g039_o040/collision" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g039_o040/LB_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/LB_link2_visual_1" class="g039_o040/visual" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/LB_link3" pos="0.2 0 0" quat="0.965961 0 0 -0.258689">
+            <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/LB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/LB_link3_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g039_o040/LB_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/LB_link3_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/LB_foot_link" pos="0.4 0 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g039_o040/LB_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+              <geom name="g039_o040/LB_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+              <site name="g039_o040/LB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g039_o040/RF_link1" pos="0.8 -0.1 0" quat="0.683293 0.182998 -0.182798 -0.682793">
+        <inertial pos="0 0 0" mass="1.08284" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/RF_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/RF_link1_collision" class="g039_o040/collision" size="0.015 0.0707105" pos="0.05 0 0.05" quat="0.923877 0 0.38269 0" type="cylinder"/>
+        <geom name="g039_o040/RF_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/RF_link1_visual_1" class="g039_o040/visual" size="0.015 0.0707105" pos="0.05 0 0.05" quat="0.923877 0 0.38269 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/RF_link2" pos="0.1 0 0.1" quat="0.682975 0.182593 0.683275 0.182593">
+          <inertial pos="0 0 0" mass="1.8198" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/RF_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/RF_link2_collision" class="g039_o040/collision" size="0.015 0.254951" pos="0.05 0 0.25" quat="0.995137 0 0.0985036 0" type="cylinder"/>
+          <geom name="g039_o040/RF_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/RF_link2_visual_1" class="g039_o040/visual" size="0.015 0.254951" pos="0.05 0 0.25" quat="0.995137 0 0.0985036 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/RF_link3" pos="0.1 0 0.5" quat="0.683293 -0.682793 0.182998 0.182798">
+            <inertial pos="0 0 0" mass="1.52111" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/RF_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/RF_link3_collision" class="g039_o040/collision" size="0.015 0.180278" pos="0.1 -0.15 0" quat="0.62341 0.333706 0.62341 -0.333706" type="cylinder"/>
+            <geom name="g039_o040/RF_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/RF_link3_visual_1" class="g039_o040/visual" size="0.015 0.180278" pos="0.1 -0.15 0" quat="0.62341 0.333706 0.62341 -0.333706" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/RF_link4" pos="0.2 -0.3 0" quat="0.683238 0.499928 0.499728 0.18311">
+              <inertial pos="0 0 0" mass="1.64853" diaginertia="0.000968 0.000968 0.000784"/>
+              <joint name="g039_o040/RF_joint4" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+              <geom name="g039_o040/RF_link4_collision" class="g039_o040/collision" size="0.015 0.212132" pos="0.15 0 0.15" quat="0.923877 0 0.38269 0" type="cylinder"/>
+              <geom name="g039_o040/RF_link4_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+              <geom name="g039_o040/RF_link4_visual_1" class="g039_o040/visual" size="0.015 0.212132" pos="0.15 0 0.15" quat="0.923877 0 0.38269 0" type="cylinder" material="g039_o040/blue"/>
+              <body name="g039_o040/RF_foot_link" pos="0.3 0 0.3">
+                <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+                <geom name="g039_o040/RF_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+                <geom name="g039_o040/RF_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+                <site name="g039_o040/RF_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g039_o040/RM_link1" pos="0 -0.2 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/RM_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/RM_link1_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g039_o040/RM_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/RM_link1_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/RM_link2" pos="0.4 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.2" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/RM_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/RM_link2_collision" class="g039_o040/collision" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g039_o040/RM_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/RM_link2_visual_1" class="g039_o040/visual" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/RM_link3" pos="0.2 0 0" quat="0.965961 0 0 0.258689">
+            <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/RM_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/RM_link3_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g039_o040/RM_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/RM_link3_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/RM_foot_link" pos="0.4 0 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g039_o040/RM_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+              <geom name="g039_o040/RM_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+              <site name="g039_o040/RM_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+      <body name="g039_o040/RB_link1" pos="-0.3 -0.1 0" quat="0.707407 0 0 -0.706807">
+        <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+        <joint name="g039_o040/RB_joint1" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+        <geom name="g039_o040/RB_link1_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+        <geom name="g039_o040/RB_link1_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+        <geom name="g039_o040/RB_link1_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+        <body name="g039_o040/RB_link2" pos="0.4 0 0" quat="0.683293 -0.682793 0.182998 0.182798">
+          <inertial pos="0 0 0" mass="1.2" diaginertia="0.000968 0.000968 0.000784"/>
+          <joint name="g039_o040/RB_joint2" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+          <geom name="g039_o040/RB_link2_collision" class="g039_o040/collision" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+          <geom name="g039_o040/RB_link2_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+          <geom name="g039_o040/RB_link2_visual_1" class="g039_o040/visual" size="0.015 0.1" pos="0.1 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+          <body name="g039_o040/RB_link3" pos="0.2 0 0" quat="0.965961 0 0 0.258689">
+            <inertial pos="0 0 0" mass="1.6" diaginertia="0.000968 0.000968 0.000784"/>
+            <joint name="g039_o040/RB_joint3" pos="0 0 0" axis="0 0 1" range="-6.28 6.28"/>
+            <geom name="g039_o040/RB_link3_collision" class="g039_o040/collision" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder"/>
+            <geom name="g039_o040/RB_link3_visual_0" class="g039_o040/visual" size="0.044 0.03" type="cylinder" material="g039_o040/red"/>
+            <geom name="g039_o040/RB_link3_visual_1" class="g039_o040/visual" size="0.015 0.2" pos="0.2 0 0" quat="0.707107 0 0.707107 0" type="cylinder" material="g039_o040/blue"/>
+            <body name="g039_o040/RB_foot_link" pos="0.4 0 0">
+              <inertial pos="0 0 0" mass="0.05" diaginertia="1.25e-05 1.25e-05 1.25e-05"/>
+              <geom name="g039_o040/RB_foot_link_collision" class="g039_o040/collision" size="0.025"/>
+              <geom name="g039_o040/RB_foot_link_visual" class="g039_o040/visual" size="0.025" material="g039_o040/grey"/>
+              <site name="g039_o040/RB_touch_site" pos="0 0 0" size="0.01" rgba="0 0 0 0"/>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <general name="g031_o027/LF_joint1" joint="g031_o027/LF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LF_joint2" joint="g031_o027/LF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LF_joint3" joint="g031_o027/LF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LF_joint4" joint="g031_o027/LF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LM_joint1" joint="g031_o027/LM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LM_joint2" joint="g031_o027/LM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LM_joint3" joint="g031_o027/LM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LB_joint1" joint="g031_o027/LB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LB_joint2" joint="g031_o027/LB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/LB_joint3" joint="g031_o027/LB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RF_joint1" joint="g031_o027/RF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RF_joint2" joint="g031_o027/RF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RF_joint3" joint="g031_o027/RF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RF_joint4" joint="g031_o027/RF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RM_joint1" joint="g031_o027/RM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RM_joint2" joint="g031_o027/RM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RM_joint3" joint="g031_o027/RM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RB_joint1" joint="g031_o027/RB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RB_joint2" joint="g031_o027/RB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g031_o027/RB_joint3" joint="g031_o027/RB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LF_joint1" joint="g034_o022/LF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LF_joint2" joint="g034_o022/LF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LF_joint3" joint="g034_o022/LF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LF_joint4" joint="g034_o022/LF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LM_joint1" joint="g034_o022/LM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LM_joint2" joint="g034_o022/LM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LM_joint3" joint="g034_o022/LM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LB_joint1" joint="g034_o022/LB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LB_joint2" joint="g034_o022/LB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/LB_joint3" joint="g034_o022/LB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RF_joint1" joint="g034_o022/RF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RF_joint2" joint="g034_o022/RF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RF_joint3" joint="g034_o022/RF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RF_joint4" joint="g034_o022/RF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RM_joint1" joint="g034_o022/RM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RM_joint2" joint="g034_o022/RM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RM_joint3" joint="g034_o022/RM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RB_joint1" joint="g034_o022/RB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RB_joint2" joint="g034_o022/RB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g034_o022/RB_joint3" joint="g034_o022/RB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LF_joint1" joint="g003_o015/LF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LF_joint2" joint="g003_o015/LF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LF_joint3" joint="g003_o015/LF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LF_joint4" joint="g003_o015/LF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LM_joint1" joint="g003_o015/LM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LM_joint2" joint="g003_o015/LM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LM_joint3" joint="g003_o015/LM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LB_joint1" joint="g003_o015/LB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LB_joint2" joint="g003_o015/LB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/LB_joint3" joint="g003_o015/LB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RF_joint1" joint="g003_o015/RF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RF_joint2" joint="g003_o015/RF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RF_joint3" joint="g003_o015/RF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RF_joint4" joint="g003_o015/RF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RM_joint1" joint="g003_o015/RM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RM_joint2" joint="g003_o015/RM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RM_joint3" joint="g003_o015/RM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RB_joint1" joint="g003_o015/RB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RB_joint2" joint="g003_o015/RB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g003_o015/RB_joint3" joint="g003_o015/RB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LF_joint1" joint="g021_o010/LF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LF_joint2" joint="g021_o010/LF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LF_joint3" joint="g021_o010/LF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LF_joint4" joint="g021_o010/LF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LM_joint1" joint="g021_o010/LM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LM_joint2" joint="g021_o010/LM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LM_joint3" joint="g021_o010/LM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LB_joint1" joint="g021_o010/LB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LB_joint2" joint="g021_o010/LB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/LB_joint3" joint="g021_o010/LB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RF_joint1" joint="g021_o010/RF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RF_joint2" joint="g021_o010/RF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RF_joint3" joint="g021_o010/RF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RF_joint4" joint="g021_o010/RF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RM_joint1" joint="g021_o010/RM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RM_joint2" joint="g021_o010/RM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RM_joint3" joint="g021_o010/RM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RB_joint1" joint="g021_o010/RB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RB_joint2" joint="g021_o010/RB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g021_o010/RB_joint3" joint="g021_o010/RB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LF_joint1" joint="g039_o040/LF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LF_joint2" joint="g039_o040/LF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LF_joint3" joint="g039_o040/LF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LF_joint4" joint="g039_o040/LF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LM_joint1" joint="g039_o040/LM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LM_joint2" joint="g039_o040/LM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LM_joint3" joint="g039_o040/LM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LB_joint1" joint="g039_o040/LB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LB_joint2" joint="g039_o040/LB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/LB_joint3" joint="g039_o040/LB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RF_joint1" joint="g039_o040/RF_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RF_joint2" joint="g039_o040/RF_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RF_joint3" joint="g039_o040/RF_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RF_joint4" joint="g039_o040/RF_joint4" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RM_joint1" joint="g039_o040/RM_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RM_joint2" joint="g039_o040/RM_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RM_joint3" joint="g039_o040/RM_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RB_joint1" joint="g039_o040/RB_joint1" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RB_joint2" joint="g039_o040/RB_joint2" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+    <general name="g039_o040/RB_joint3" joint="g039_o040/RB_joint3" ctrllimited="true" ctrlrange="-6.28 6.28" biastype="affine" biasprm="0 -1"/>
+  </actuator>
+</mujoco>

@@ -71,7 +71,7 @@ class JoystickSensor(Sensor):
 class NewhexJoystickFlatCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g002_o049" / "scene.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g040_o001" / "scene.xml")
         )
     )
     max_episode_seconds: float = 20.0

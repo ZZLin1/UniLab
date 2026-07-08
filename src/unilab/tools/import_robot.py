@@ -733,12 +733,7 @@ def _strip_scene_includes_for_fragment(scene_xml: Path) -> Path:
     for include in includes:
         root.remove(include)
 
-    tmp = tempfile.NamedTemporaryFile(
-        suffix=f"_{scene_xml.name}",
-        dir=str(scene_xml.parent),
-        mode="w",
-        delete=False,
-    )
+    tmp = tempfile.NamedTemporaryFile(suffix=f"_{scene_xml.name}", mode="w", delete=False)
     tmp.close()
     tree.write(tmp.name)
     return Path(tmp.name)

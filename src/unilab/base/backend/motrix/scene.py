@@ -30,6 +30,27 @@ def _extract_keyframes(fragment_file: Path) -> list[ET.Element]:
     return list(root.findall("keyframe"))
 
 
+def _absolutize_scene_references(root: ET.Element, base_dir: Path) -> None:
+    """Keep temporary XMLs relocatable when they are written outside assets."""
+    for include in root.findall(".//include"):
+        file = include.get("file")
+        if file and not Path(file).is_absolute():
+            include.set("file", str((base_dir / file).resolve()))
+
+    for compiler in root.findall(".//compiler"):
+        for attr in ("assetdir", "meshdir", "texturedir"):
+            value = compiler.get(attr)
+            if value and not Path(value).is_absolute():
+                compiler.set(attr, str((base_dir / value).resolve()))
+
+
+def _write_temp_xml(tree: ET.ElementTree, suffix: str) -> Path:
+    tmp = tempfile.NamedTemporaryFile(suffix=suffix, mode="w", delete=False)
+    tmp.close()
+    tree.write(tmp.name)
+    return Path(tmp.name)
+
+
 def _materialize_robot_with_fragment_keyframes(
     robot_path: Path, fragment_paths: Sequence[Path]
 ) -> Path:
@@ -58,15 +79,8 @@ def _materialize_robot_with_fragment_keyframes(
     for keyframe in fragment_keyframes:
         existing.extend(list(keyframe))
 
-    tmp = tempfile.NamedTemporaryFile(
-        suffix=f"_{robot_path.name}",
-        dir=str(robot_path.parent),
-        mode="w",
-        delete=False,
-    )
-    tmp.close()
-    tree.write(tmp.name)
-    return Path(tmp.name)
+    _absolutize_scene_references(root, robot_path.parent)
+    return _write_temp_xml(tree, suffix=f"_{robot_path.name}")
 
 
 def _materialize_fragment_without_keyframes(fragment_file: Path) -> Path:
@@ -78,15 +92,8 @@ def _materialize_fragment_without_keyframes(fragment_file: Path) -> Path:
         return fragment_file
     for keyframe in keyframes:
         root.remove(keyframe)
-    tmp = tempfile.NamedTemporaryFile(
-        suffix=f"_{fragment_file.name}",
-        dir=str(fragment_file.parent),
-        mode="w",
-        delete=False,
-    )
-    tmp.close()
-    tree.write(tmp.name)
-    return Path(tmp.name)
+    _absolutize_scene_references(root, fragment_file.parent)
+    return _write_temp_xml(tree, suffix=f"_{fragment_file.name}")
 
 
 def _cleanup_temp_xml(path: Path, original: Path) -> None:
