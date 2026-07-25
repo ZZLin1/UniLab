@@ -1,7 +1,9 @@
 import os
 import time
+import xml.etree.ElementTree as ET
 from collections.abc import Sequence
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, TypeVar, cast
 
 import numpy as np
@@ -63,6 +65,7 @@ def _first_scalar(value: Any) -> float:
 @dataclass
 class _MotrixSceneContext:
     model: "mtx.SceneModel"
+    sensor_names: tuple[str, ...] = ()
     terrain_origins: np.ndarray | None = None
     terrain_surface_sampler: object | None = None
     cleanup_handle: object | None = None
@@ -101,13 +104,14 @@ def _build_motrix_scene_context(
         raise ValueError("SceneCfg.model_file must be provided")
 
     if scene.terrain is None:
+        sensor_names = _collect_motrix_scene_sensor_names(scene)
         model = materialize_motrix_scene(
             model_file=scene.model_file,
             fragment_files=scene.fragment_files,
             add_body_sensors=add_body_sensors,
             base_name=base_name,
         )
-        return _MotrixSceneContext(model=model)
+        return _MotrixSceneContext(model=model, sensor_names=sensor_names)
 
     if scene.terrain.generator is None:
         raise ValueError("SceneCfg.terrain.generator must be configured for terrain scenes")
@@ -124,9 +128,53 @@ def _build_motrix_scene_context(
     )
     return _MotrixSceneContext(
         model=model,
+        sensor_names=_collect_motrix_scene_sensor_names(scene),
         terrain_origins=terrain_origins,
         terrain_surface_sampler=terrain_surface_sampler,
     )
+
+
+def _resolve_motrix_xml_path(path: str, base_file: Path) -> Path:
+    candidate = Path(path)
+    if candidate.is_absolute():
+        return candidate
+    return (base_file.parent / candidate).resolve()
+
+
+def _collect_xml_sensor_names(path: Path, seen: set[Path]) -> list[str]:
+    resolved = path.resolve()
+    if resolved in seen:
+        return []
+    seen.add(resolved)
+    root = ET.parse(resolved).getroot()
+    names: list[str] = []
+    for include in root.findall("include"):
+        include_file = include.get("file")
+        if include_file:
+            names.extend(
+                _collect_xml_sensor_names(
+                    _resolve_motrix_xml_path(include_file, resolved),
+                    seen,
+                )
+            )
+    for sensor in root.findall("./sensor/*"):
+        name = sensor.get("name")
+        if name:
+            names.append(name)
+    return names
+
+
+def _collect_motrix_scene_sensor_names(scene: SceneCfg) -> tuple[str, ...]:
+    seen: set[Path] = set()
+    names = _collect_xml_sensor_names(Path(scene.model_file).resolve(), seen)
+    for fragment_file in scene.fragment_files:
+        names.extend(
+            _collect_xml_sensor_names(
+                _resolve_motrix_xml_path(fragment_file, Path(scene.model_file).resolve()),
+                seen,
+            )
+        )
+    return tuple(dict.fromkeys(names))
 
 
 class MotrixBackend(SimBackend):
@@ -160,6 +208,7 @@ class MotrixBackend(SimBackend):
         self._base_name = base_name
 
         self._model = scene_context.model
+        self._sensor_names = scene_context.sensor_names
         self._body_id_to_name = {  # type: ignore[assignment]
             link.index: link.name for link in self._model.links if link.name
         }
@@ -488,6 +537,9 @@ class MotrixBackend(SimBackend):
             contype[geom_id] = int(geom.collision_group)
             conaffinity[geom_id] = int(geom.collision_affinity)
         return contype, conaffinity
+
+    def get_sensor_names(self) -> tuple[str, ...]:
+        return self._sensor_names
 
     def get_geom_friction(self) -> np.ndarray:
         if not self._supports_geom_friction_override:

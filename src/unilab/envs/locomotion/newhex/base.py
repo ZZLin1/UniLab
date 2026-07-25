@@ -4,12 +4,15 @@ from dataclasses import dataclass, field
 
 import numpy as np
 
+from unilab.dtype_config import get_global_dtype
 from unilab.envs.locomotion.common.base import (
     BaseNoiseConfig,
     LocomotionBaseCfg,
     LocomotionBaseEnv,
     PdControlConfig,
 )
+
+UNDESIRED_CONTACT_SENSOR_PREFIX = "undesired_"
 
 
 @dataclass
@@ -41,6 +44,23 @@ class NewhexBaseCfg(LocomotionBaseCfg):
 
 class NewhexBaseEnv(LocomotionBaseEnv):
     _cfg: NewhexBaseCfg
+
+    def _init_undesired_contact_sensors(self) -> None:
+        self._undesired_contact_sensor_names = tuple(
+            name
+            for name in self._backend.get_sensor_names()
+            if name.startswith(UNDESIRED_CONTACT_SENSOR_PREFIX)
+        )
+
+    def _undesired_contact_counts(self, threshold: float) -> np.ndarray:
+        sensor_names = getattr(self, "_undesired_contact_sensor_names", ())
+        if not sensor_names:
+            return np.zeros((self._num_envs,), dtype=get_global_dtype())
+        values = np.asarray(
+            self._backend.get_sensor_data_batch(sensor_names),
+            dtype=get_global_dtype(),
+        )
+        return np.sum(values > float(threshold), axis=1).astype(get_global_dtype())
 
     def get_foot_pos(self) -> np.ndarray:
         """Get foot positions. Returns shape (num_envs, 6, 3)"""

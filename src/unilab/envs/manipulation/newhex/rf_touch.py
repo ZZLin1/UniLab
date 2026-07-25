@@ -73,7 +73,7 @@ class RFTouchSensor(Sensor):
 class NewhexRFTouchCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g006_o007" / "scene.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g060_o049" / "scene.xml")
         )
     )
     max_episode_seconds: float = 10.0
@@ -143,6 +143,7 @@ class NewhexRFTouchEnv(NewhexBaseEnv):
         )
         super().__init__(cfg, backend, num_envs)
         self._reward_cfg = cfg.reward_config
+        self._init_undesired_contact_sensors()
         self._target_pos_w = np.zeros((num_envs, 3), dtype=get_global_dtype())
         self._rf_load_force = np.zeros((num_envs,), dtype=get_global_dtype())
         self._rf_body_id = self._backend.get_body_id(cfg.load.body_name)
@@ -186,6 +187,7 @@ class NewhexRFTouchEnv(NewhexBaseEnv):
             "dof_vel": self._reward_dof_vel,
             "dof_acc": rewards.dof_acc,
             "energy": rewards.energy,
+            "undesired_contacts": self._reward_undesired_contacts,
         }
 
     def reset(self, env_indices: np.ndarray) -> tuple[dict[str, np.ndarray], dict]:
@@ -329,6 +331,10 @@ class NewhexRFTouchEnv(NewhexBaseEnv):
         del ctx
         contact = self.feet_force[:, SUPPORT_FOOT_INDICES, 2] > self._reward_cfg.contact_threshold
         return np.mean(contact.astype(get_global_dtype()), axis=1)  # type: ignore[no-any-return]
+
+    def _reward_undesired_contacts(self, ctx: RewardContext) -> np.ndarray:
+        del ctx
+        return self._undesired_contact_counts(self._reward_cfg.contact_threshold)
 
     def _reward_rf_target(self, ctx: RewardContext) -> np.ndarray:
         del ctx

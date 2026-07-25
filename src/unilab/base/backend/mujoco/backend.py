@@ -715,6 +715,13 @@ class MuJoCoBackend(SimBackend):
             np.asarray(self._model.geom_conaffinity, dtype=np.int32).copy(),
         )
 
+    def get_sensor_names(self) -> tuple[str, ...]:
+        names: list[str] = []
+        for sensor_id in range(self._model.nsensor):
+            name = mujoco.mj_id2name(self._model, mujoco.mjtObj.mjOBJ_SENSOR, sensor_id)
+            names.append("" if name is None else str(name))
+        return tuple(names)
+
     def get_geom_friction(self) -> np.ndarray:
         return np.asarray(self._model.geom_friction, dtype=np.float64).copy()
 

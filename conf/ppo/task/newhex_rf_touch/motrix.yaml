@@ -44,6 +44,7 @@ reward:
     dof_vel: -1.0e-3
     dof_acc: -4.0e-7
     energy: -1.0e-5
+    undesired_contacts: -1.0
   tracking_sigma: 0.25
   target_sigma: 0.1
   support_still_sigma: 0.02

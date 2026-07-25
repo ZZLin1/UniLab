@@ -180,6 +180,10 @@ class SimBackend(abc.ABC):
         """Return per-geom contact type and affinity masks."""
         raise NotImplementedError(f"{self.__class__.__name__} does not expose geom contact masks")
 
+    def get_sensor_names(self) -> tuple[str, ...]:
+        """Return backend sensor names in backend id order."""
+        raise NotImplementedError(f"{self.__class__.__name__} does not expose sensor names")
+
     def get_geom_friction(self) -> np.ndarray:
         """Return the backend geom-friction table."""
         raise NotImplementedError(f"{self.__class__.__name__} does not expose geom friction")

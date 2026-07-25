@@ -16,7 +16,11 @@ from unilab.base.scene import SceneCfg
 from unilab.dtype_config import get_global_dtype
 from unilab.envs.locomotion.common import rewards
 from unilab.envs.locomotion.common.base import Sensor
-from unilab.envs.locomotion.common.commands import Commands
+from unilab.envs.locomotion.common.commands import (
+    Commands,
+    apply_heading_yaw_feedback,
+    sample_heading_commands,
+)
 from unilab.envs.locomotion.common.domain_rand import DomainRandConfig
 from unilab.envs.locomotion.common.dr_provider import LocomotionDRProvider
 from unilab.envs.locomotion.common.rewards import RewardContext
@@ -48,6 +52,7 @@ class RewardConfig:
     base_height_target: float
     target_foot_height: float = 0.1
     contact_forces_threshold: float = 200.0
+    undesired_contact_threshold: float = 0.1
 
 
 @dataclass
@@ -71,7 +76,7 @@ class JoystickSensor(Sensor):
 class NewhexJoystickFlatCfg(NewhexBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g040_o001" / "scene.xml")
+            model_file=str(ASSETS_ROOT_PATH / "robots" / "newhex" / "g060_o049" / "scene.xml")
         )
     )
     max_episode_seconds: float = 20.0
@@ -84,6 +89,17 @@ class NewhexJoystickFlatCfg(NewhexBaseCfg):
 
 
 class NewhexJoystickDomainRandomizationProvider(LocomotionDRProvider):
+    def _sample_commands(self, env: Any, num_reset: int) -> np.ndarray:
+        commands = super()._sample_commands(env, num_reset)
+        if getattr(env.cfg.commands, "heading_command", False):
+            commands[:, 2] = 0.0
+        return commands
+
+    def _build_extra_info_updates(self, env: Any, num_reset: int) -> dict[str, np.ndarray]:
+        if getattr(env.cfg.commands, "heading_command", False):
+            return {"heading_commands": sample_heading_commands(env, num_reset)}
+        return {}
+
     def _compute_reset_obs(
         self,
         env: Any,
@@ -95,6 +111,7 @@ class NewhexJoystickDomainRandomizationProvider(LocomotionDRProvider):
         dof_pos: Any,
         dof_vel: Any,
     ) -> dict[str, np.ndarray]:
+        env._update_commands(info_updates, env_ids=env_ids)
         return cast(
             dict[str, np.ndarray],
             env._compute_obs(
@@ -174,6 +191,7 @@ class NewhexWalkTask(NewhexBaseEnv):
         super().__init__(cfg, backend, num_envs)
         self._enable_reward_log = True
         self._reward_cfg = cfg.reward_config
+        self._init_undesired_contact_sensors()
         self._init_reward_functions()
         self._init_domain_randomization(NewhexJoystickDomainRandomizationProvider())
         if self._scene_terrain_origins is not None and terrain_generator is not None:
@@ -234,6 +252,7 @@ class NewhexWalkTask(NewhexBaseEnv):
             "contact_forces": self._reward_contact_forces,
             "feet_slide": self._reward_feet_slide,
             "foot_drag": self._reward_foot_drag,
+            "undesired_contacts": self._reward_undesired_contacts,
         }
 
     def reset(self, env_indices: np.ndarray) -> tuple[dict[str, np.ndarray], dict]:
@@ -271,6 +290,7 @@ class NewhexWalkTask(NewhexBaseEnv):
 
         state.info["qacc"] = self._estimate_dof_acc(dof_vel)
         state.info["torques"] = self._estimate_pd_torques(state.info, dof_pos, dof_vel)
+        self._update_commands(state.info)
 
         terminated = self._compute_terminated(gravity)
         reward = self._compute_reward(state.info, linvel, gyro, gravity, dof_pos, dof_vel)
@@ -384,6 +404,10 @@ class NewhexWalkTask(NewhexBaseEnv):
         excess = np.clip(force - self._reward_cfg.contact_forces_threshold, 0.0, None)
         return np.sum(excess, axis=1)  # type: ignore[no-any-return]
 
+    def _reward_undesired_contacts(self, ctx: RewardContext) -> np.ndarray:
+        del ctx
+        return self._undesired_contact_counts(self._reward_cfg.undesired_contact_threshold)
+
     def _reward_feet_slide(self, ctx: RewardContext) -> np.ndarray:
         del ctx
         contact = np.max(np.abs(self.feet_force), axis=2) > 0.1
@@ -410,3 +434,45 @@ class NewhexWalkTask(NewhexBaseEnv):
             - float(self._cfg.control_config.Kd) * dof_vel
         )
         return np.asarray(torques, dtype=get_global_dtype())
+
+    def _update_commands(self, info: dict, env_ids: np.ndarray | None = None) -> None:
+        commands_arr = np.asarray(info["commands"], dtype=get_global_dtype())
+        resampling_time = float(self._cfg.commands.resampling_time)
+        if resampling_time > 0.0 and env_ids is None:
+            interval_steps = max(int(round(resampling_time / self._cfg.ctrl_dt)), 1)
+            steps = np.asarray(info.get("steps", np.zeros((self._num_envs,), dtype=np.uint32)))
+            resample_mask = (steps > 0) & ((steps % interval_steps) == 0)
+            if np.any(resample_mask):
+                num_resample = int(np.count_nonzero(resample_mask))
+                low = np.asarray(self._cfg.commands.vel_limit[0], dtype=get_global_dtype())
+                high = np.asarray(self._cfg.commands.vel_limit[1], dtype=get_global_dtype())
+                commands_arr[resample_mask] = np.asarray(
+                    np.random.uniform(low=low, high=high, size=(num_resample, 3)),
+                    dtype=get_global_dtype(),
+                )
+                if getattr(self._cfg.commands, "heading_command", False):
+                    heading_commands = self._ensure_heading_commands(info, commands_arr.shape[0])
+                    heading_commands[resample_mask] = sample_heading_commands(self, num_resample)
+                    info["heading_commands"] = heading_commands
+
+        if getattr(self._cfg.commands, "heading_command", False):
+            heading_commands = self._ensure_heading_commands(info, commands_arr.shape[0])
+            base_quat = np.asarray(self._backend.get_base_quat(), dtype=get_global_dtype())
+            if env_ids is not None:
+                base_quat = base_quat[np.asarray(env_ids, dtype=np.int32)]
+            if base_quat.shape[0] == commands_arr.shape[0]:
+                apply_heading_yaw_feedback(
+                    commands_arr,
+                    base_quat,
+                    heading_commands,
+                    stiffness=float(self._cfg.commands.heading_control_stiffness),
+                )
+        info["commands"] = commands_arr
+
+    def _ensure_heading_commands(self, info: dict, num_obs: int) -> np.ndarray:
+        heading_commands = info.get("heading_commands")
+        if heading_commands is None or np.asarray(heading_commands).shape != (num_obs,):
+            heading_commands = sample_heading_commands(self, num_obs)
+        heading_commands = np.asarray(heading_commands, dtype=get_global_dtype())
+        info["heading_commands"] = heading_commands
+        return heading_commands

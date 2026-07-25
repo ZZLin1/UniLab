@@ -423,4 +423,4 @@ uv run scripts/import_generation_offspring_urdfs.py
 uv run scripts/sweep_newhex_joystick_then_rf_touch.py
 
 
-uv run scripts/rename_policy_run_dirs.py --start-generation 40 --apply
+uv run scripts/rename_policy_run_dirs.py --start-generation 48 --apply

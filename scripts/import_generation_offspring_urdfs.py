@@ -20,7 +20,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 # Change this path by hand for the next generation, for example generation_n/offspring.
 OFFSPRING_DIR = Path(
     "/home/zzl/Hexapod_Generator/Hexapod_Generator/experiments/nsga2_hexapod/"
-    "generations/generation_041/offspring"
+    "generations/generation_060/offspring"
 )
 
 

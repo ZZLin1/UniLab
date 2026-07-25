@@ -56,7 +56,30 @@ def _parse_args(argv: Sequence[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--spacing-x", type=float, default=2.0)
     parser.add_argument("--spacing-y", type=float, default=2.0)
     parser.add_argument("--velocity", type=float, default=1.0)
+    parser.add_argument(
+        "--heading-yaw",
+        type=float,
+        default=0.0,
+        help="World-frame target heading yaw in radians for direction-mode playback.",
+    )
+    parser.add_argument(
+        "--heading-stiffness",
+        type=float,
+        default=0.5,
+        help="P gain used to convert heading error into the commanded yaw rate.",
+    )
     parser.add_argument("--fps", type=float, default=60.0)
+    parser.add_argument(
+        "--steps-per-render",
+        type=int,
+        default=1,
+        help="Run this many policy/env steps before each render sync.",
+    )
+    parser.add_argument(
+        "--no-sleep",
+        action="store_true",
+        help="Do not throttle playback with time.sleep(1 / fps).",
+    )
     parser.add_argument("--device", default=None)
     parser.add_argument("--checkpoint", default="latest")
     parser.add_argument("--lookat", nargs=3, type=float, default=[4.0, 0.0, 0.8])
@@ -155,6 +178,8 @@ def _make_session(
     train_cfg: dict[str, Any],
     device: str,
     velocity: float,
+    heading_yaw: float,
+    heading_stiffness: float,
     checkpoint: str,
 ) -> RobotSession:
     from rsl_rl.runners import OnPolicyRunner
@@ -164,7 +189,12 @@ def _make_session(
     env_override = {
         "reward_config": reward_config,
         "scene": SceneCfg(model_file=str(scene_xml)),
-        "commands": {"fixed_command": [float(velocity), 0.0, 0.0]},
+        "commands": {
+            "fixed_command": [float(velocity), 0.0, 0.0],
+            "heading_command": True,
+            "heading_range": [float(heading_yaw), float(heading_yaw)],
+            "heading_control_stiffness": float(heading_stiffness),
+        },
     }
     env = create_env(
         cfg,
@@ -243,6 +273,12 @@ def _render_settings() -> Any:
     return settings
 
 
+def _step_sessions(sessions: Sequence[RobotSession]) -> None:
+    for session in sessions:
+        action = session.policy(session.obs)
+        session.obs, _reward, _done, _info = session.wrapped_env.step(action)
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parse_args(argv)
     count = int(args.count)
@@ -267,6 +303,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                 train_cfg=train_cfg,
                 device=device,
                 velocity=float(args.velocity),
+                heading_yaw=float(args.heading_yaw),
+                heading_stiffness=float(args.heading_stiffness),
                 checkpoint=str(args.checkpoint),
             )
         )
@@ -300,6 +338,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     frame_dt = 1.0 / max(float(args.fps), 1e-6)
+    steps_per_render = max(int(args.steps_per_render), 1)
     with RenderApp("WARN") as render:
         render.launch(model, render_settings=_render_settings())
         render.set_main_camera(None)
@@ -313,9 +352,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         try:
             with torch.inference_mode():
                 while not render.is_closed:
-                    for session in sessions:
-                        action = session.policy(session.obs)
-                        session.obs, _reward, _done, _info = session.wrapped_env.step(action)
+                    for _ in range(steps_per_render):
+                        _step_sessions(sessions)
                     qpos = _merged_qpos(
                         sessions,
                         cols=int(args.cols),
@@ -325,7 +363,8 @@ def main(argv: Sequence[str] | None = None) -> int:
                     data.set_dof_pos(qpos[0], model)
                     model.forward_kinematic(data)
                     render.sync(data)
-                    time.sleep(frame_dt)
+                    if not args.no_sleep:
+                        time.sleep(frame_dt)
         finally:
             for session in sessions:
                 close = getattr(session.env, "close", None)

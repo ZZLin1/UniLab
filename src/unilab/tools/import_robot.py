@@ -26,6 +26,18 @@ IMU_SITE = "imu"
 FOOT_LINK_SUFFIX = "_foot_link"
 TOUCH_SITE_SUFFIX = "_touch_site"
 LEG_SENSOR_ORDER = ("RF", "RM", "RB", "LF", "LM", "LB")
+MID_REAR_LAST_SEGMENT_COLLISION_GEOMS = frozenset(
+    {
+        "LF_link3_collision",
+        "LF_link4_collision",
+        "LM_link3_collision",
+        "LB_link3_collision",
+        "RF_link3_collision",
+        "RF_link4_collision",
+        "RM_link3_collision",
+        "RB_link3_collision",
+    }
+)
 _FREE_X_HELPER_JOINT = "__unilab_keyframe_x"
 _FREE_Y_HELPER_JOINT = "__unilab_keyframe_y"
 _HEIGHT_HELPER_JOINT = "__unilab_keyframe_height"
@@ -315,6 +327,52 @@ def _ensure_foot_touch_sites(root: ET.Element) -> list[str]:
     return sorted(touch_site_names, key=_leg_sort_key)
 
 
+def _undesired_touch_sensor_name(geom_name: str) -> str:
+    return f"undesired_{geom_name}"
+
+
+def _undesired_touch_site_name(geom_name: str) -> str:
+    return f"{geom_name}_undesired_touch_site"
+
+
+def _is_foot_collision_geom(geom_name: str) -> bool:
+    return geom_name.endswith(f"{FOOT_LINK_SUFFIX}_collision")
+
+
+def _site_attrs_for_collision_geom(geom: ET.Element, site_name: str) -> dict[str, str]:
+    attrs = {
+        "name": site_name,
+        "rgba": "0 0 0 0",
+    }
+    for key in ("type", "pos", "quat", "size"):
+        value = geom.get(key)
+        if value is not None:
+            attrs[key] = value
+    return attrs
+
+
+def _ensure_undesired_touch_sites(root: ET.Element) -> list[str]:
+    touch_site_names: list[str] = []
+    for body in root.findall(".//body"):
+        for geom in list(body.findall("geom")):
+            geom_name = geom.get("name")
+            if (
+                geom_name is None
+                or geom.get("class") != "collision"
+                or _is_foot_collision_geom(geom_name)
+            ):
+                continue
+            site_name = _undesired_touch_site_name(geom_name)
+            touch_site_names.append(site_name)
+            if _has_direct_child(body, "site", {"name": site_name}):
+                continue
+            _insert_site_after_geoms(
+                body,
+                ET.Element("site", _site_attrs_for_collision_geom(geom, site_name)),
+            )
+    return sorted(touch_site_names)
+
+
 def _sensor_name_for_joint(joint_name: str, sensor_type: str) -> str:
     prefix, separator, suffix = joint_name.partition("_joint")
     if separator:
@@ -381,11 +439,32 @@ def _append_touch_sensors(sensor: ET.Element, touch_site_names: Sequence[str]) -
         )
 
 
+def _append_undesired_touch_sensors(
+    sensor: ET.Element, undesired_touch_site_names: Sequence[str]
+) -> None:
+    for site_name in undesired_touch_site_names:
+        geom_name = site_name[: -len("_undesired_touch_site")]
+        ET.SubElement(
+            sensor,
+            "touch",
+            {"name": _undesired_touch_sensor_name(geom_name), "site": site_name},
+        )
+
+
 def _rebuild_generated_sensors(
-    root: ET.Element, *, include_imu: bool, touch_site_names: Sequence[str]
+    root: ET.Element,
+    *,
+    include_imu: bool,
+    touch_site_names: Sequence[str],
+    undesired_touch_site_names: Sequence[str],
 ) -> None:
     joint_names = _actuated_joint_names(root)
-    if not include_imu and not touch_site_names and not joint_names:
+    if (
+        not include_imu
+        and not touch_site_names
+        and not undesired_touch_site_names
+        and not joint_names
+    ):
         return
 
     for sensor in root.findall("sensor"):
@@ -396,15 +475,22 @@ def _rebuild_generated_sensors(
         _append_imu_sensors(sensor)
     _append_joint_sensors(sensor, joint_names)
     _append_touch_sensors(sensor, touch_site_names)
+    _append_undesired_touch_sensors(sensor, undesired_touch_site_names)
     root.append(sensor)
 
 
 def _ensure_generated_sites_and_sensors(root: ET.Element) -> None:
     include_imu = _ensure_imu_site(root)
     touch_site_names = _ensure_foot_touch_sites(root)
-    if not include_imu and not touch_site_names:
+    undesired_touch_site_names = _ensure_undesired_touch_sites(root)
+    if not include_imu and not touch_site_names and not undesired_touch_site_names:
         return
-    _rebuild_generated_sensors(root, include_imu=include_imu, touch_site_names=touch_site_names)
+    _rebuild_generated_sensors(
+        root,
+        include_imu=include_imu,
+        touch_site_names=touch_site_names,
+        undesired_touch_site_names=undesired_touch_site_names,
+    )
 
 
 def _preserve_root_link_inertial(urdf: Path, xml_path: Path) -> None:
@@ -597,6 +683,14 @@ def _ensure_robot_default_joint(root: ET.Element) -> None:
     joint.set("frictionloss", "0.2")
 
 
+def _configure_newhex_mid_rear_self_collision(root: ET.Element) -> None:
+    for geom in root.findall(".//geom"):
+        if geom.get("name") not in MID_REAR_LAST_SEGMENT_COLLISION_GEOMS:
+            continue
+        geom.set("contype", "2")
+        geom.set("conaffinity", "3")
+
+
 def _parse_values(text: str | None) -> list[float]:
     if text is None:
         return []
@@ -747,6 +841,7 @@ def _postprocess_xml(xml_path: Path) -> None:
     _ensure_robot_default_joint(root)
     _remove_default_material(root)
     _strip_generated_scene_bits(root)
+    _configure_newhex_mid_rear_self_collision(root)
     _ensure_generated_sites_and_sensors(root)
     ET.indent(tree, space="  ")
     tree.write(xml_path, encoding="unicode")

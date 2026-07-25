@@ -67,6 +67,23 @@ def main(argv: Sequence[str] | None = None) -> int:
         return joystick_code
     return rf_touch_code
 
+# def main(argv: Sequence[str] | None = None) -> int:
+#     args = _parse_args(argv)
+#     child_args = _child_args(args)
+
+#     rf_touch_code = _run_sweep("RF touch", RF_TOUCH_SWEEP, child_args)
+#     if rf_touch_code != 0 and not args.continue_after_failure:
+#         print(
+#             f"[newhex-sweep-all] joystick sweep failed with exit code {rf_touch_code}; "
+#             "skipping RF touch",
+#             flush=True,
+#         )
+#         return rf_touch_code
+
+#     joystick_code = _run_sweep("joystick", JOYSTICK_SWEEP, child_args)
+#     if rf_touch_code != 0:
+#         return rf_touch_code
+#     return joystick_code
 
 if __name__ == "__main__":
     raise SystemExit(main())

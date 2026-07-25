@@ -43,8 +43,77 @@ For safety, `--mode motrix-grid` fails fast until a backend-owned heterogeneous
 playback API exists. The manifest and sequential modes are fully functional and
 do not edit any task config, robot XML, checkpoint, or env file.
 
+# 生成Manifest
+## 生成 移动任务 Manifest
+```bash
+uv run experiments/newhex_hetero_motrix_grid/run.py \
+  --mode manifest \
+  --names-csv experiments/top36_locomotion_offspring_names.csv \
+  --rows 6 \
+  --cols 6 \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_locomotion.csv \
+  --policy-log-root logs/rsl_rl_ppo/NewhexJoystickFlat
+```
+## 生成 操作任务 Manifest
+```bash
+uv run experiments/newhex_hetero_motrix_grid/run.py \
+  --mode manifest \
+  --names-csv experiments/top36_manipulation_offspring_names.csv \
+  --rows 6 \
+  --cols 6 \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_manipulation.csv \
+  --policy-log-root logs/rsl_rl_ppo/NewhexRFTouch
+```
 
+# 合并场景
+## 合并 移动任务 场景
+```bash
+uv run experiments/newhex_hetero_motrix_grid/merge_scene.py \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_locomotion.csv \
+  --count 36 \
+  --rows 6 \
+  --cols 6 \
+  --output experiments/newhex_hetero_motrix_grid/generated/top36_locomotion_scene.xml \
+  --validate \
+  --validate-motrix
+```
+## 合并 操作任务 场景
+```bash
+uv run experiments/newhex_hetero_motrix_grid/merge_scene.py \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_manipulation.csv \
+  --count 36 \
+  --rows 6 \
+  --cols 6 \
+  --output experiments/newhex_hetero_motrix_grid/generated/top36_manipulation_scene.xml \
+  --validate \
+  --validate-motrix
+```
 
+# 静态预览场景
+```bash
+uv run experiments/newhex_hetero_motrix_grid/preview_scene.py \
+  --scene experiments/newhex_hetero_motrix_grid/generated/top36_locomotion_scene.xml \
+  --lookat 5 -5 0.8 \
+  --distance 12
+```
+
+# top36播放策略
+## 最大36个 移动适应度 个体播放策略
+```bash
+uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
+  --manifest experiments/newhex_hetero_motrix_grid/top36_locomotion.csv \
+  --count 36 \
+  --cols 6 \
+  --scene experiments/newhex_hetero_motrix_grid/generated/top36_locomotion_scene.xml \
+  --lookat 5 -5 0.8 \
+  --distance 12 \
+  --velocity 1.5 \
+  --heading-yaw 0.0 \
+  --steps-per-render 2 \
+  --no-sleep
+```
+## 最大36个 操作适应度 个体播放策略
+```bash
 uv run experiments/newhex_hetero_motrix_grid/play_merged_rf_touch_policies.py \
   --manifest experiments/newhex_hetero_motrix_grid/top36_manipulation.csv \
   --count 36 \
@@ -53,11 +122,4 @@ uv run experiments/newhex_hetero_motrix_grid/play_merged_rf_touch_policies.py \
   --episode-seconds 3.0 \
   --lookat 5 -5 0.8 \
   --distance 12
-
-uv run experiments/newhex_hetero_motrix_grid/play_merged_policies.py \
-  --manifest experiments/newhex_hetero_motrix_grid/top36_locomotion.csv \
-  --count 36 \
-  --cols 6 \
-  --scene experiments/newhex_hetero_motrix_grid/generated/top36_locomotion_scene.xml \
-  --lookat 5 -5 0.8 \
-  --distance 12
+``` 
