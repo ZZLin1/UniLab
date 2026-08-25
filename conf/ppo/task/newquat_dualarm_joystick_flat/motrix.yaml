@@ -1,0 +1,71 @@
+# @package _global_
+# PPO
+training:
+  task_name: NewquatDualArmJoystickFlat
+  sim_backend: motrix
+
+play_profile:
+  enabled: true
+  env:
+    commands:
+      fixed_command: [1.5, 0.0, 0.0]
+
+algo:
+  num_envs: 1024
+  max_iterations: 1001
+  empirical_normalization: true
+  obs_groups:
+    actor:
+      - actor
+  policy:
+    init_noise_std: 0.5
+  algorithm:
+    learning_rate: 3.0e-4
+    entropy_coef: 1.0e-3
+
+reward:
+  scales:
+    tracking_lin_vel: 4
+    tracking_ang_vel: 2
+    lin_vel_z: -5.0
+    ang_vel_xy: -0.1
+    base_height: -10.0
+    action_rate: -0.05
+    torques: -2.0e-4
+    dof_vel: -1.0e-3
+    energy: -1.0e-5
+    similar_to_default: -0.
+    contact: 3
+    contact_forces: -1.0e-3
+    feet_slide: -0.1
+    swing_feet_z: 7.0
+    orientation: -15
+    dof_acc: -4.e-7
+    undesired_contacts: -1.0
+
+  tracking_sigma: 0.4
+  base_height_target: 0.65
+  contact_forces_threshold: 200.0
+  undesired_contact_threshold: 0.1
+
+# uv run train --algo ppo --task newquat_dualarm_joystick_flat --sim mujoco \
+#   +env.scene.model_file=/home/zzl/UniLab/src/unilab/assets/robots/go2_dual_arm/scene_flat.xml \
+#   +env.asset.base_name=base \
+#   +env.control_config.leg_kp=60.0 \
+#   +env.control_config.leg_kd=2.0 \
+#   reward.base_height_target=0.4
+
+
+# uv run train --algo ppo --task newquat_dualarm_joystick_flat --sim motrix \
+#   +env.scene.model_file=/home/zzl/UniLab/src/unilab/assets/robots/anymal_c_dual_arm/scene_flat.xml \
+#   +env.asset.base_name=base \
+#   +env.control_config.leg_kp=150.0 \
+#   +env.control_config.leg_kd=0.5 \
+#   reward.base_height_target=0.56
+
+
+# uv run train --algo ppo --task newquat_dualarm_rf_touch --sim motrix \
+#   +env.scene.model_file=/home/zzl/UniLab/src/unilab/assets/robots/anymal_c_dual_arm/scene_flat.xml \
+#   +env.asset.base_name=base \
+#   +env.control_config.leg_kp=150.0 \
+#   +env.control_config.leg_kd=0.5

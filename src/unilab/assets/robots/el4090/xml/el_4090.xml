@@ -1,0 +1,380 @@
+<mujoco model="el_4090">
+  <compiler angle="radian" meshdir="../meshes" autolimits="true" />
+
+  <option cone="elliptic" impratio="100" />
+
+  <default>
+    <default class="el_4090">
+      <geom friction="0.6" margin="0.001" condim="1"/>
+      <joint damping="0.5" armature="0.05" frictionloss="0.5"/>
+      <motor ctrlrange="-80 80"/>
+      <default class="hip_aa">
+        <joint range="-3 3"/>
+      </default>
+      <default class="hip_fe">
+        <joint range="-3 3"/>
+      </default>
+      <default class="knee">
+        <joint range="-3 3"/>
+      </default>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom group="3"/>
+        <default class="foot">
+          <geom size="0.02" priority="1" condim="6" friction="0.6 0.02 0.01"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <material name="metal" rgba=".9 .95 .95 1" />
+    <material name="gray" rgba="0.752941 0.752941 0.752941 1" />
+    <material name="blue" rgba="0.501960 0.501960 0.752941 1" />
+
+    <mesh file="BASE.STL" />
+    <mesh file="RF_HIP.STL" />
+    <mesh file="RF_THIGH.STL" />
+    <mesh file="RF_SHANK.STL" />
+    <mesh file="RF_FOOT.STL" />
+    <mesh file="RM_HIP.STL" />
+    <mesh file="RM_THIGH.STL" />
+    <mesh file="RM_SHANK.STL" />
+    <mesh file="RM_FOOT.STL" />
+    <mesh file="RB_HIP.STL" />
+    <mesh file="RB_THIGH.STL" />
+    <mesh file="RB_SHANK.STL" />
+    <mesh file="RB_FOOT.STL" />
+    <mesh file="LF_HIP.STL" />
+    <mesh file="LF_THIGH.STL" />
+    <mesh file="LF_SHANK.STL" />
+    <mesh file="LF_FOOT.STL" />
+    <mesh file="LM_HIP.STL" />
+    <mesh file="LM_THIGH.STL" />
+    <mesh file="LM_SHANK.STL" />
+    <mesh file="LM_FOOT.STL" />
+    <mesh file="LB_HIP.STL" />
+    <mesh file="LB_THIGH.STL" />
+    <mesh file="LB_SHANK.STL" />
+    <mesh file="LB_FOOT.STL" />
+  </asset>
+
+  <worldbody>
+    <body name="BASE" pos="0 0 0.35" childclass="el_4090">
+      <inertial pos="8.76981e-07 0.000115496 -0.147278" 
+        mass="7.44160" 
+        fullinertia="0.102252 0.550673 0.642667 1.38784e-07 3.46680e-08 8.47302e-06" />
+      <freejoint />
+      <geom mesh="BASE" material="metal" class="visual" />
+      <geom size="0.4 0.15 0.08" type="box" class="collision" />
+      <site name="imu" pos="0 0 -0.147278" />
+
+      <!-- Right Front Leg -->
+      <body name="RF_hip" pos="0.45 -0.1 -0.1105" quat="0 0.707107 0.707107 0">
+        <inertial pos="-0.0284101 -0.00133832 0.104823" 
+          mass="1.11610" 
+          fullinertia="0.00135962 0.00210959 0.00166449 -3.05912e-05 0.000222421 1.38916e-05" />
+        <joint name="RF_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="RF_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="RF_thigh" pos="-0.09 0.0795 0.154" quat="0.707107 -0.707107 0 0">
+          <inertial pos="-0.0284794 0.0124923 -0.0809892" 
+            mass="1.00124" 
+            fullinertia="0.00104777 0.00212934 0.00281212 0.000929232 2.63860e-05 -1.15742e-05" />
+          <joint name="RF_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="RF_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="RF_shank" pos="-0.1782 0.090798 -0.0685">
+            <inertial pos="-0.00122266 -0.107332 -0.0108828" 
+              mass="0.577674" 
+              fullinertia="0.00449636 6.70983e-05 0.00452067 -5.31534e-05 1.14279e-08 2.41776e-06" />
+            <joint name="RF_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="RF_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="RF_foot" pos="-0.00818264 -0.299167 -0.0111074">
+              <inertial pos="0.00315049 0.0187639 0.000250412" 
+                mass="0.0652350" 
+                fullinertia="1.21480e-05 1.32090e-05 1.43073e-05 -6.01498e-08 2.79522e-08 -9.55459e-08" />
+              <geom mesh="RF_FOOT" material="blue" class="visual" />
+              <geom name="RF_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- Right Middle Leg -->
+      <body name="RM_hip" pos="0 -0.2 -0.1105" quat="0 0.707107 0.707107 0">
+        <inertial pos="-0.02841 -0.0013382 0.10482" 
+          mass="1.1161" 
+          fullinertia="0.0013596 0.0021096 0.0016645 -3.06e-05 0.00022242 1.3892e-05" />
+        <joint name="RM_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="RM_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="RM_thigh" pos="-0.09 0.0795 0.154" quat="0.707107 -0.707107 0 0">
+          <inertial pos="-0.028479 0.012492 -0.080989" 
+            mass="1.0012" 
+            fullinertia="0.0010478 0.0021293 0.0028121 0.00092923 2.6386e-05 -1.1574e-05" />
+          <joint name="RM_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="RM_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="RM_shank" pos="-0.1782 0.090798 -0.0685">
+            <inertial pos="-0.001255 -0.10733 -0.010883" 
+              mass="0.57767" 
+              fullinertia="0.0044965 6.7005e-05 0.0045207 -4.9108e-05 -4.438e-08 2.4174e-06" />
+            <joint name="RM_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="RM_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="RM_foot" pos="0.0012754 -0.29928 -0.011107">
+              <inertial pos="0.0027166 0.018832 0.00025041" 
+                mass="0.065235" 
+                fullinertia="1.2151e-05 1.3206e-05 1.4307e-05 -8.4562e-08 3.0162e-08 -9.4852e-08" />
+              <geom mesh="RM_FOOT" material="blue" class="visual" />
+              <geom name="RM_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- Right Back Leg -->
+      <body name="RB_hip" pos="-0.45 -0.1 -0.1108" quat="0 0.707107 0.707107 0">
+        <inertial pos="-0.02841 0.0013389 0.10482" 
+          mass="1.1161" 
+          fullinertia="0.0013596 0.0021096 0.0016645 3.06e-05 0.00022242 1.3892e-05" />
+        <joint name="RB_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="RB_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="RB_thigh" pos="-0.09 0.0945 0.1537" quat="0.707107 -0.707107 0 0">
+          <inertial pos="-0.028479 0.012492 -0.093011" 
+            mass="1.0012" 
+            fullinertia="0.0010478 0.0021293 0.0028121 0.00092923 -2.6386e-05 1.1574e-05" />
+          <joint name="RB_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="RB_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="RB_shank" pos="-0.1782 0.090798 -0.0835">
+            <inertial pos="-0.0012227 -0.10733 -0.011117" 
+              mass="0.57767" 
+              fullinertia="0.0044964 6.7098e-05 0.0045207 -5.3153e-05 1.1428e-08 2.4178e-06" />
+            <joint name="RB_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="RB_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="RB_foot" pos="0.00127539 -0.29928 -0.010893">
+              <inertial pos="-0.0031505 0.018764 -0.00025041" 
+                mass="0.065235" 
+                fullinertia="1.2148e-05 1.3209e-05 1.4307e-05 6.015e-08 2.7952e-08 9.5546e-08" />
+              <geom mesh="RB_FOOT" material="blue" class="visual" />
+              <geom name="RB_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- Left Front Leg -->
+      <body name="LF_hip" pos="0.45 0.099997 -0.1105" quat="0.707107 0 0 -0.707107">
+        <inertial pos="-0.02841 -0.0013383 -0.10482" 
+          mass="1.1161" 
+          fullinertia="0.0013596 0.0021096 0.0016645 -3.0608e-05 -0.00022242 -1.3892e-05" />
+        <joint name="LF_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="LF_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="LF_thigh" pos="-0.09 0.0795 -0.154" quat="0.707107 0.707107 0 0">
+          <inertial pos="-0.028479 0.012492 0.080989" 
+            mass="1.0012" 
+            fullinertia="0.0010478 0.0021293 0.0028121 0.00092923 -2.6386e-05 1.1574e-05" />
+          <joint name="LF_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="LF_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="LF_shank" pos="-0.1782 0.090798 0.0685">
+            <inertial pos="-0.001255 -0.10733 0.010883" 
+              mass="0.57767" 
+              fullinertia="0.0044965 6.7005e-05 0.0045207 -4.9108e-05 -4.438e-08 -2.4174e-06" />
+            <joint name="LF_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="LF_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="LF_foot" pos="0.00127539 -0.29928 0.011107" quat="0 0 1 0">
+              <inertial pos="0.00271657 0.0188316 0.000250423" 
+                mass="0.0652350" 
+                fullinertia="1.21513e-05 1.32056e-05 1.43073e-05 -8.45643e-08 3.01643e-08 -9.48605e-08" />
+              <geom mesh="LF_FOOT" material="blue" class="visual" />
+              <geom name="LF_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- Left Middle Leg -->
+      <body name="LM_hip" pos="0 0.2 -0.1105" quat="0.707107 0 0 -0.707107">
+        <inertial pos="-0.02841 -0.0013383 -0.10482" 
+          mass="1.1161" 
+          fullinertia="0.0013596 0.0021096 0.0016645 -3.0609e-05 -0.00022242 -1.3892e-05" />
+        <joint name="LM_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="LM_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="LM_thigh" pos="-0.09 0.0795 -0.154" quat="0.707107 0.707107 0 0">
+          <inertial pos="-0.028479 0.012492 0.080989" 
+            mass="1.0012" 
+            fullinertia="0.0010478 0.0021293 0.0028121 0.00092923 -2.6386e-05 1.1574e-05" />
+          <joint name="LM_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="LM_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="LM_shank" pos="-0.1782 0.090798 0.0685">
+            <inertial pos="-0.001255 -0.10733 0.010883" 
+              mass="0.57767" 
+              fullinertia="0.0044965 6.7005e-05 0.0045207 -4.9108e-05 -4.438e-08 -2.4174e-06" />
+            <joint name="LM_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="LM_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="LM_foot" pos="0.0012754 -0.29928 0.011107" quat="0 0 1 0">
+              <inertial pos="0.0027166 0.018832 0.00025041" 
+                mass="0.065235" 
+                fullinertia="1.2151e-05 1.3206e-05 1.4307e-05 -8.4562e-08 3.0162e-08 -9.4852e-08" />
+              <geom mesh="LM_FOOT" material="blue" class="visual" />
+              <geom name="LM_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+
+      <!-- Left Back Leg -->
+      <body name="LB_hip" pos="-0.45 0.099997 -0.1105" quat="0.707107 0 0 -0.707107">
+        <inertial pos="-0.02841 0.0013389 -0.10482" 
+          mass="1.1161" 
+          fullinertia="0.0013596 0.0021096 0.0016645 3.06e-05 -0.00022242 1.3892e-05" />
+        <joint name="LB_HAA" axis="0 0 1" class="hip_aa" />
+        <geom mesh="LB_HIP" material="gray" class="visual" />
+        <geom size="0.04 0.08" type="capsule" class="collision" />
+        <body name="LB_thigh" pos="-0.09 0.0945 -0.154" quat="0.707107 0.707107 0 0">
+          <inertial pos="-0.028479 0.012492 0.093011" 
+            mass="1.0012" 
+            fullinertia="0.0010478 0.0021293 0.0028121 0.00092923 2.6386e-05 -1.1574e-05" />
+          <joint name="LB_HFE" axis="0 0 1" class="hip_fe" />
+          <geom mesh="LB_THIGH" material="gray" class="visual" />
+          <geom size="0.09 0.02" pos="-0.08 0 0" quat="0.707107 0 0.707107 0" type="capsule" class="collision" />
+          <body name="LB_shank" pos="-0.1782 0.090798 0.0835">
+            <inertial pos="-0.0012227 -0.10733 0.011117" 
+              mass="0.57767" 
+              fullinertia="0.0044964 6.7098e-05 0.0045207 -5.3153e-05 1.1428e-08 2.4178e-06" />
+            <joint name="LB_KFE" axis="0 0 1" class="knee" />
+            <geom mesh="LB_SHANK" material="gray" class="visual" />
+            <geom size="0.015 0.14" pos="0 -0.14 0" quat="1 0 0 0" type="capsule" class="collision" />
+            <body name="LB_foot" pos="-0.0081826 -0.29917 0.010893" quat="0 0 1 0">
+              <inertial pos="-0.0031505 0.018764 -0.00025041" 
+                mass="0.065235" 
+                fullinertia="1.2148e-05 1.3209e-05 1.4307e-05 6.015e-08 2.7952e-08 9.5546e-08" />
+              <geom mesh="LB_FOOT" material="blue" class="visual" />
+              <geom name="LB_foot" class="foot" pos="0 0.02 0" type="sphere" />
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <!-- Right Front Leg -->
+    <motor class="hip_aa" name="RF_HAA" joint="RF_HAA" />
+    <motor class="hip_fe" name="RF_HFE" joint="RF_HFE" />
+    <motor class="knee" name="RF_KFE" joint="RF_KFE" />
+    
+    <!-- Right Middle Leg -->
+    <motor class="hip_aa" name="RM_HAA" joint="RM_HAA" />
+    <motor class="hip_fe" name="RM_HFE" joint="RM_HFE" />
+    <motor class="knee" name="RM_KFE" joint="RM_KFE" />
+    
+    <!-- Right Back Leg -->
+    <motor class="hip_aa" name="RB_HAA" joint="RB_HAA" />
+    <motor class="hip_fe" name="RB_HFE" joint="RB_HFE" />
+    <motor class="knee" name="RB_KFE" joint="RB_KFE" />
+    
+    <!-- Left Front Leg -->
+    <motor class="hip_aa" name="LF_HAA" joint="LF_HAA" />
+    <motor class="hip_fe" name="LF_HFE" joint="LF_HFE" />
+    <motor class="knee" name="LF_KFE" joint="LF_KFE" />
+    
+    <!-- Left Middle Leg -->
+    <motor class="hip_aa" name="LM_HAA" joint="LM_HAA" />
+    <motor class="hip_fe" name="LM_HFE" joint="LM_HFE" />
+    <motor class="knee" name="LM_KFE" joint="LM_KFE" />
+    
+    <!-- Left Back Leg -->
+    <motor class="hip_aa" name="LB_HAA" joint="LB_HAA" />
+    <motor class="hip_fe" name="LB_HFE" joint="LB_HFE" />
+    <motor class="knee" name="LB_KFE" joint="LB_KFE" />
+  </actuator>
+
+  <sensor>
+    <!-- Joint Position Sensors -->
+    <jointpos name="RF_HAA_pos" joint="RF_HAA" />
+    <jointpos name="RF_HFE_pos" joint="RF_HFE" />
+    <jointpos name="RF_KFE_pos" joint="RF_KFE" />
+    <jointpos name="RM_HAA_pos" joint="RM_HAA" />
+    <jointpos name="RM_HFE_pos" joint="RM_HFE" />
+    <jointpos name="RM_KFE_pos" joint="RM_KFE" />
+    <jointpos name="RB_HAA_pos" joint="RB_HAA" />
+    <jointpos name="RB_HFE_pos" joint="RB_HFE" />
+    <jointpos name="RB_KFE_pos" joint="RB_KFE" />
+    <jointpos name="LF_HAA_pos" joint="LF_HAA" />
+    <jointpos name="LF_HFE_pos" joint="LF_HFE" />
+    <jointpos name="LF_KFE_pos" joint="LF_KFE" />
+    <jointpos name="LM_HAA_pos" joint="LM_HAA" />
+    <jointpos name="LM_HFE_pos" joint="LM_HFE" />
+    <jointpos name="LM_KFE_pos" joint="LM_KFE" />
+    <jointpos name="LB_HAA_pos" joint="LB_HAA" />
+    <jointpos name="LB_HFE_pos" joint="LB_HFE" />
+    <jointpos name="LB_KFE_pos" joint="LB_KFE" />
+
+    <!-- Joint Velocity Sensors -->
+    <jointvel name="RF_HAA_vel" joint="RF_HAA" />
+    <jointvel name="RF_HFE_vel" joint="RF_HFE" />
+    <jointvel name="RF_KFE_vel" joint="RF_KFE" />
+    <jointvel name="RM_HAA_vel" joint="RM_HAA" />
+    <jointvel name="RM_HFE_vel" joint="RM_HFE" />
+    <jointvel name="RM_KFE_vel" joint="RM_KFE" />
+    <jointvel name="RB_HAA_vel" joint="RB_HAA" />
+    <jointvel name="RB_HFE_vel" joint="RB_HFE" />
+    <jointvel name="RB_KFE_vel" joint="RB_KFE" />
+    <jointvel name="LF_HAA_vel" joint="LF_HAA" />
+    <jointvel name="LF_HFE_vel" joint="LF_HFE" />
+    <jointvel name="LF_KFE_vel" joint="LF_KFE" />
+    <jointvel name="LM_HAA_vel" joint="LM_HAA" />
+    <jointvel name="LM_HFE_vel" joint="LM_HFE" />
+    <jointvel name="LM_KFE_vel" joint="LM_KFE" />
+    <jointvel name="LB_HAA_vel" joint="LB_HAA" />
+    <jointvel name="LB_HFE_vel" joint="LB_HFE" />
+    <jointvel name="LB_KFE_vel" joint="LB_KFE" />
+
+    <!-- Joint Torque Sensors -->
+    <jointactuatorfrc name="RF_HAA_torque" joint="RF_HAA" noise="0.01" />
+    <jointactuatorfrc name="RF_HFE_torque" joint="RF_HFE" noise="0.01" />
+    <jointactuatorfrc name="RF_KFE_torque" joint="RF_KFE" noise="0.01" />
+    <jointactuatorfrc name="RM_HAA_torque" joint="RM_HAA" noise="0.01" />
+    <jointactuatorfrc name="RM_HFE_torque" joint="RM_HFE" noise="0.01" />
+    <jointactuatorfrc name="RM_KFE_torque" joint="RM_KFE" noise="0.01" />
+    <jointactuatorfrc name="RB_HAA_torque" joint="RB_HAA" noise="0.01" />
+    <jointactuatorfrc name="RB_HFE_torque" joint="RB_HFE" noise="0.01" />
+    <jointactuatorfrc name="RB_KFE_torque" joint="RB_KFE" noise="0.01" />
+    <jointactuatorfrc name="LF_HAA_torque" joint="LF_HAA" noise="0.01" />
+    <jointactuatorfrc name="LF_HFE_torque" joint="LF_HFE" noise="0.01" />
+    <jointactuatorfrc name="LF_KFE_torque" joint="LF_KFE" noise="0.01" />
+    <jointactuatorfrc name="LM_HAA_torque" joint="LM_HAA" noise="0.01" />
+    <jointactuatorfrc name="LM_HFE_torque" joint="LM_HFE" noise="0.01" />
+    <jointactuatorfrc name="LM_KFE_torque" joint="LM_KFE" noise="0.01" />
+    <jointactuatorfrc name="LB_HAA_torque" joint="LB_HAA" noise="0.01" />
+    <jointactuatorfrc name="LB_HFE_torque" joint="LB_HFE" noise="0.01" />
+    <jointactuatorfrc name="LB_KFE_torque" joint="LB_KFE" noise="0.01" />
+
+    <!-- IMU Sensors -->
+    <framequat name="imu_quat" objtype="site" objname="imu" />
+    <gyro name="imu_gyro" site="imu" />
+    <accelerometer name="imu_acc" site="imu" />
+    <framepos name="frame_pos" objtype="site" objname="imu" />
+    <framelinvel name="frame_vel" objtype="site" objname="imu" />
+  </sensor>
+
+  <keyframe>
+    <key name="home" 
+      qpos="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
+      ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+  </keyframe>
+</mujoco>

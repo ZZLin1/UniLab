@@ -1,0 +1,263 @@
+<mujoco model="elspider_air">
+  <compiler angle="radian" meshdir="../meshes/" autolimits="true"/>
+  <!-- <statistic meansize="0.191765" extent="1.00427" center="-1.11173e-07 1.77608e-07 0.0119638"/> -->
+  <option timestep="0.002" apirate="500" integrator="RK4" gravity="0 0 -9.806" solver="Newton" noslip_iterations="0"/>
+
+  <include file="../../terrains/xml/terrains.xml"/>
+
+  <asset>
+    <mesh name="BASE" file="BASE.STL"/>
+    <mesh name="RF_HIP" file="RF_HIP.STL"/>
+    <mesh name="RF_THIGH" file="RF_THIGH.STL"/>
+    <mesh name="RF_SHANK" file="RF_SHANK.STL"/>
+    <mesh name="RF_FOOT" file="RF_FOOT.STL"/>
+    <mesh name="RM_HIP" file="RM_HIP.STL"/>
+    <mesh name="RM_THIGH" file="RM_THIGH.STL"/>
+    <mesh name="RM_SHANK" file="RM_SHANK.STL"/>
+    <mesh name="RM_FOOT" file="RM_FOOT.STL"/>
+    <mesh name="RB_HIP" file="RB_HIP.STL"/>
+    <mesh name="RB_THIGH" file="RB_THIGH.STL"/>
+    <mesh name="RB_SHANK" file="RB_SHANK.STL"/>
+    <mesh name="RB_FOOT" file="RB_FOOT.STL"/>
+    <mesh name="LF_HIP" file="LF_HIP.STL"/>
+    <mesh name="LF_THIGH" file="LF_THIGH.STL"/>
+    <mesh name="LF_SHANK" file="LF_SHANK.STL"/>
+    <mesh name="LF_FOOT" file="LF_FOOT.STL"/>
+    <mesh name="LM_HIP" file="LM_HIP.STL"/>
+    <mesh name="LM_THIGH" file="LM_THIGH.STL"/>
+    <mesh name="LM_SHANK" file="LM_SHANK.STL"/>
+    <mesh name="LM_FOOT" file="LM_FOOT.STL"/>
+    <mesh name="LB_HIP" file="LB_HIP.STL"/>
+    <mesh name="LB_THIGH" file="LB_THIGH.STL"/>
+    <mesh name="LB_SHANK" file="LB_SHANK.STL"/>
+    <mesh name="LB_FOOT" file="LB_FOOT.STL"/>
+  </asset>
+
+  <!-- <default>
+    <geom contype="1" conaffinity="1" friction="0.6 0.3 0.3" rgba="0.5 0.6 0.7 1" margin="0.001" group="0"/>
+  </default> -->
+  <!-- <asset> -->
+    <!-- <texture type="skybox" builtin="gradient" rgb1="0.2 0.2 0.2" rgb2="0.9 0.9 0.9" width="512" height="512"/> -->
+    <!-- <texture name="grid" type="2d" builtin="checker" rgb1=".9 .8 .7" rgb2=".4 .4 .4" width="300" height="300" mark="edge" markrgb=".2 .3 .4"/> -->
+    <!-- <material name="grid" texture="grid" texrepeat="2 2" texuniform="true" reflectance=".2"/> -->
+    <!-- <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" /> -->
+  <!-- </asset> -->
+  <visual>
+    <global offwidth="1920" offheight="1080"/>
+    <rgba com="0.502 1.0 0 0.5" contactforce="0.98 0.4 0.4 0.7" contactpoint="1.0 1.0 0.6 0.4"/>
+    <scale com="0.2" forcewidth="0.035" contactwidth="0.10" contactheight="0.04"/>
+  </visual>
+
+  <worldbody>
+    <!-- <light directional="true" diffuse=".8 .8 .8" pos="0 0 10" dir="0 0 -10"/> -->
+    <!-- <geom name="ground" type="plane" pos="0 0 0" size="20 20 0.1" material="grid" solimp=".9 .95 .001" solref='-10000 -1000'/> -->
+
+    <geom size="0.0005 0.0005 0.0005" type="box" contype="0" conaffinity="0" group="1" density="0"/>
+
+    <!-- <body name="cube" pos="0 0 0">
+      <geom type="box" size="0.4 0.10 0.07" pos="0 0 0.07"/>
+    </body> -->
+
+    <body name="trunk" pos="0 0 0.20">
+      <inertial pos="7.32e-06 0 0.0242874" quat="-1.76991e-05 0.707108 1.76992e-05 0.707106" mass="15.8991" diaginertia="0.538968 0.470549 0.0926086"/>
+      <joint name="floating_base" type="free"/>
+      <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="BASE"/>
+      <geom type="mesh" rgba="1 1 1 1" mesh="BASE"/>
+      <site name="imu" pos="0 0 0"/>
+
+      <body name="RF_HIP" pos="0.3 -0.08 0.011">
+        <inertial pos="-0.0114691 -0.123064 -0.036436" quat="0.597001 0.800562 -0.0154481 -0.0495124" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="RF_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RF_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="RF_HIP"/>
+        <body name="RF_THIGH" pos="0.0355 -0.14999 -0.045056" quat="-2.59734e-06 0.707105 2.59735e-06 0.707108">
+          <inertial pos="0.114248 -5.753e-05 -0.019768" quat="0.0023152 0.731693 0.0017932 0.681628" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="RF_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RF_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="RF_THIGH"/>
+          <body name="RF_SHANK" pos="0.13 0 0" quat="-2.59734e-06 0.707105 0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 -0.00979119" quat="0.483194 0.516259 -0.516259 0.483194" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="RF_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RF_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="RF_SHANK"/>
+            <geom pos="0 -0.232 -0.018" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RF_FOOT"/>
+            <geom name="RF_FOOT" size="0.02" pos="0 -0.232 -0.018" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+      <body name="RM_HIP" pos="0 -0.14 0.011">
+        <inertial pos="-0.0114691 -0.123064 -0.036436" quat="0.597001 0.800562 -0.0154481 -0.0495124" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="RM_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RM_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="RM_HIP"/>
+        <body name="RM_THIGH" pos="0.0355 -0.14999 -0.045056" quat="-2.59734e-06 0.707105 2.59735e-06 0.707108">
+          <inertial pos="0.114248 -5.753e-05 -0.019768" quat="0.0023152 0.731693 0.0017932 0.681628" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="RM_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RM_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="RM_THIGH"/>
+          <body name="RM_SHANK" pos="0.13 0 0" quat="-2.59734e-06 0.707105 0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 -0.00979119" quat="0.483194 0.516259 -0.516259 0.483194" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="RM_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RM_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="RM_SHANK"/>
+            <geom pos="0 -0.232 -0.018" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RM_FOOT"/>
+            <geom name="RM_FOOT" size="0.02" pos="0 -0.232 -0.018" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+      <body name="RB_HIP" pos="-0.3 -0.08 0.011">
+        <inertial pos="0.0114691 -0.123064 -0.036436" quat="0.597001 0.800562 0.0154481 0.0495124" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="RB_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RB_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="RB_HIP"/>
+        <body name="RB_THIGH" pos="-0.0355 -0.14999 -0.045056" quat="-2.59734e-06 0.707105 2.59735e-06 0.707108">
+          <inertial pos="0.114248 -5.753e-05 0.019768" quat="-0.0017932 0.681628 -0.0023152 0.731693" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="RB_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RB_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="RB_THIGH"/>
+          <body name="RB_SHANK" pos="0.13 0 0" quat="-2.59734e-06 0.707105 0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 0.00979119" quat="0.516259 0.483194 -0.483194 0.516259" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="RB_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RB_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="RB_SHANK"/>
+            <geom pos="0 -0.232 0.018" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="RB_FOOT"/>
+            <geom name="RB_FOOT" size="0.02" pos="0 -0.232 0.018" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+      <body name="LF_HIP" pos="0.3 0.08 0.011" quat="-3.67321e-06 -1 0 0">
+        <inertial pos="-0.0114691 -0.123064 0.036436" quat="0.800562 0.597001 -0.0495124 -0.0154481" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="LF_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LF_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="LF_HIP"/>
+        <body name="LF_THIGH" pos="0.0355 -0.14999 0.045056" quat="-2.59734e-06 0.707105 -2.59735e-06 -0.707108">
+          <inertial pos="0.114248 -5.753e-05 0.019768" quat="-0.0017932 0.681628 -0.0023152 0.731693" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="LF_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LF_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="LF_THIGH"/>
+          <body name="LF_SHANK" pos="0.13 0 0" quat="-2.59734e-06 -0.707105 -0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 0.00979119" quat="0.516259 0.483194 -0.483194 0.516259" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="LF_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LF_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="LF_SHANK"/>
+            <geom pos="0 -0.232 0.018" quat="0 0 1 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LF_FOOT"/>
+            <geom name="LF_FOOT" size="0.02" pos="0 -0.232 0.018" quat="0 0 1 0" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+      <body name="LM_HIP" pos="0 0.14 0.011" quat="-3.67321e-06 -1 0 0">
+        <inertial pos="-0.0114691 -0.123064 0.036436" quat="0.800562 0.597001 -0.0495124 -0.0154481" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="LM_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LM_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="LM_HIP"/>
+        <body name="LM_THIGH" pos="0.0355 -0.14999 0.045056" quat="-2.59734e-06 0.707105 -2.59735e-06 -0.707108">
+          <inertial pos="0.114248 -5.753e-05 0.019768" quat="-0.0017932 0.681628 -0.0023152 0.731693" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="LM_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LM_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="LM_THIGH"/>
+          <body name="LM_SHANK" pos="0.13 0 0" quat="-2.59734e-06 -0.707105 -0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 0.00979119" quat="0.516259 0.483194 -0.483194 0.516259" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="LM_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LM_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="LM_SHANK"/>
+            <geom pos="0 -0.232 0.018" quat="0 0 1 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LM_FOOT"/>
+            <geom name="LM_FOOT" size="0.02" pos="0 -0.232 0.018" quat="0 0 1 0" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+      <body name="LB_HIP" pos="-0.3 0.08 0.011" quat="-3.67321e-06 -1 0 0">
+        <inertial pos="0.0114691 -0.123064 0.036436" quat="0.800562 0.597001 0.0495124 0.0154481" mass="1.20924" diaginertia="0.00510212 0.00478501 0.00100228"/>
+        <joint name="LB_HAA" pos="0 0 0" axis="0 0 1" range="-0.785 0.785"/>
+        <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LB_HIP"/>
+        <geom type="mesh" rgba="1 1 1 1" mesh="LB_HIP"/>
+        <body name="LB_THIGH" pos="-0.0355 -0.14999 0.045056" quat="-2.59734e-06 0.707105 -2.59735e-06 -0.707108">
+          <inertial pos="0.114248 -5.753e-05 -0.019768" quat="0.0023152 0.731693 0.0017932 0.681628" mass="0.925235" diaginertia="0.00238526 0.00209448 0.000648202"/>
+          <joint name="LB_HFE" pos="0 0 0" axis="0 0 1" range="-0.5233 3.14"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LB_THIGH"/>
+          <geom type="mesh" rgba="1 1 1 1" mesh="LB_THIGH"/>
+          <body name="LB_SHANK" pos="0.13 0 0" quat="-2.59734e-06 0.707105 0.707108 -2.59735e-06">
+            <inertial pos="0 -0.0809238 -0.00979119" quat="0.483194 0.516259 -0.516259 0.483194" mass="0.3005" diaginertia="0.00311314 0.00307948 8.60344e-05"/>
+            <joint name="LB_KFE" pos="0 0 0" axis="0 0 1" range="-0.6978 3.925"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LB_SHANK"/>
+            <geom type="mesh" rgba="1 1 1 1" mesh="LB_SHANK"/>
+            <geom pos="0 -0.232 -0.018" quat="0 0 1 0" type="mesh" contype="0" conaffinity="0" group="1" density="0" rgba="1 1 1 1" mesh="LB_FOOT"/>
+            <geom name="LB_FOOT" size="0.02" pos="0 -0.232 -0.018" quat="0 0 1 0" rgba="1 1 1 1"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <motor name="RF_HAA_motor"  gear="1" joint="RF_HAA"/>
+    <motor name="RF_HFE_motor"  gear="1" joint="RF_HFE"/>
+    <motor name="RF_KFE_motor"  gear="1" joint="RF_KFE"/>
+    <motor name="RM_HAA_motor"  gear="1" joint="RM_HAA"/>
+    <motor name="RM_HFE_motor"  gear="1" joint="RM_HFE"/>
+    <motor name="RM_KFE_motor"  gear="1" joint="RM_KFE"/>
+    <motor name="RB_HAA_motor"  gear="1" joint="RB_HAA"/>
+    <motor name="RB_HFE_motor"  gear="1" joint="RB_HFE"/>
+    <motor name="RB_KFE_motor"  gear="1" joint="RB_KFE"/>
+
+    <motor name="LF_HAA_motor"  gear="1" joint="LF_HAA"/>
+    <motor name="LF_HFE_motor"  gear="1" joint="LF_HFE"/>
+    <motor name="LF_KFE_motor"  gear="1" joint="LF_KFE"/>
+    <motor name="LM_HAA_motor"  gear="1" joint="LM_HAA"/>
+    <motor name="LM_HFE_motor"  gear="1" joint="LM_HFE"/>
+    <motor name="LM_KFE_motor"  gear="1" joint="LM_KFE"/>
+    <motor name="LB_HAA_motor"  gear="1" joint="LB_HAA"/>
+    <motor name="LB_HFE_motor"  gear="1" joint="LB_HFE"/>
+    <motor name="LB_KFE_motor"  gear="1" joint="LB_KFE"/>
+  </actuator>
+
+  <sensor>
+    <jointpos name="RF_HAA_pos"  joint="RF_HAA"/>
+    <jointpos name="RF_HFE_pos"  joint="RF_HFE"/>
+    <jointpos name="RF_KFE_pos"  joint="RF_KFE"/>
+    <jointpos name="RM_HAA_pos"  joint="RM_HAA"/>
+    <jointpos name="RM_HFE_pos"  joint="RM_HFE"/>
+    <jointpos name="RM_KFE_pos"  joint="RM_KFE"/>
+    <jointpos name="RB_HAA_pos"  joint="RB_HAA"/>
+    <jointpos name="RB_HFE_pos"  joint="RB_HFE"/>
+    <jointpos name="RB_KFE_pos"  joint="RB_KFE"/>
+
+    <jointpos name="LF_HAA_pos"  joint="LF_HAA"/>
+    <jointpos name="LF_HFE_pos"  joint="LF_HFE"/>
+    <jointpos name="LF_KFE_pos"  joint="LF_KFE"/>
+    <jointpos name="LM_HAA_pos"  joint="LM_HAA"/>
+    <jointpos name="LM_HFE_pos"  joint="LM_HFE"/>
+    <jointpos name="LM_KFE_pos"  joint="LM_KFE"/>
+    <jointpos name="LB_HAA_pos"  joint="LB_HAA"/>
+    <jointpos name="LB_HFE_pos"  joint="LB_HFE"/>
+    <jointpos name="LB_KFE_pos"  joint="LB_KFE"/>
+
+    <jointvel name="RF_HAA_vel"  joint="RF_HAA"/>
+    <jointvel name="RF_HFE_vel"  joint="RF_HFE"/>
+    <jointvel name="RF_KFE_vel"  joint="RF_KFE"/>
+    <jointvel name="RM_HAA_vel"  joint="RM_HAA"/>
+    <jointvel name="RM_HFE_vel"  joint="RM_HFE"/>
+    <jointvel name="RM_KFE_vel"  joint="RM_KFE"/>
+    <jointvel name="RB_HAA_vel"  joint="RB_HAA"/>
+    <jointvel name="RB_HFE_vel"  joint="RB_HFE"/>
+    <jointvel name="RB_KFE_vel"  joint="RB_KFE"/>
+
+    <jointvel name="LF_HAA_vel"  joint="LF_HAA"/>
+    <jointvel name="LF_HFE_vel"  joint="LF_HFE"/>
+    <jointvel name="LF_KFE_vel"  joint="LF_KFE"/>
+    <jointvel name="LM_HAA_vel"  joint="LM_HAA"/>
+    <jointvel name="LM_HFE_vel"  joint="LM_HFE"/>
+    <jointvel name="LM_KFE_vel"  joint="LM_KFE"/>
+    <jointvel name="LB_HAA_vel"  joint="LB_HAA"/>
+    <jointvel name="LB_HFE_vel"  joint="LB_HFE"/>
+    <jointvel name="LB_KFE_vel"  joint="LB_KFE"/>
+
+    <accelerometer name="Body_Acc" site="imu"/>
+
+    <gyro name="Body_Gyro" site="imu"/>
+
+    <framepos name="Body_Pos" objtype="site" objname="imu"/>
+
+    <framequat name="Body_Quat" objtype="site" objname="imu"/>
+
+  </sensor>
+</mujoco>

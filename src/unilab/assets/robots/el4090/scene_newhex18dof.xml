@@ -1,0 +1,65 @@
+<mujoco model="el4090 newhex18dof scene">
+  <include file="newhex18dof.xml" />
+  <statistic center="0 0 0.15" extent="1.2" />
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="-130" elevation="-20" />
+  </visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+  </worldbody>
+  <sensor>
+    <gyro site="imu" name="gyro" />
+    <velocimeter site="imu" name="local_linvel" />
+    <framezaxis objtype="site" objname="imu" name="upvector" />
+    <framepos objtype="site" objname="imu" name="global_position" />
+    <framelinvel objtype="site" objname="imu" name="global_linvel" />
+    <framepos objtype="geom" objname="RF_foot" name="RF_pos" />
+    <framelinvel objtype="geom" objname="RF_foot" name="RF_vel" />
+    <contact name="RF_foot_contact" geom1="floor" geom2="RF_foot" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="RM_foot" name="RM_pos" />
+    <framelinvel objtype="geom" objname="RM_foot" name="RM_vel" />
+    <contact name="RM_foot_contact" geom1="floor" geom2="RM_foot" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="RB_foot" name="RB_pos" />
+    <framelinvel objtype="geom" objname="RB_foot" name="RB_vel" />
+    <contact name="RB_foot_contact" geom1="floor" geom2="RB_foot" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="LF_foot" name="LF_pos" />
+    <framelinvel objtype="geom" objname="LF_foot" name="LF_vel" />
+    <contact name="LF_foot_contact" geom1="floor" geom2="LF_foot" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="LM_foot" name="LM_pos" />
+    <framelinvel objtype="geom" objname="LM_foot" name="LM_vel" />
+    <contact name="LM_foot_contact" geom1="floor" geom2="LM_foot" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="LB_foot" name="LB_pos" />
+    <framelinvel objtype="geom" objname="LB_foot" name="LB_vel" />
+    <contact name="LB_foot_contact" geom1="floor" geom2="LB_foot" data="force" num="1" reduce="mindist" />
+    <contact name="undesired_BASE_0_contact" geom1="floor" geom2="undesired_BASE_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RF_hip_0_contact" geom1="floor" geom2="undesired_RF_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RF_thigh_0_contact" geom1="floor" geom2="undesired_RF_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RF_shank_0_contact" geom1="floor" geom2="undesired_RF_shank_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RM_hip_0_contact" geom1="floor" geom2="undesired_RM_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RM_thigh_0_contact" geom1="floor" geom2="undesired_RM_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RM_shank_0_contact" geom1="floor" geom2="undesired_RM_shank_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RB_hip_0_contact" geom1="floor" geom2="undesired_RB_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RB_thigh_0_contact" geom1="floor" geom2="undesired_RB_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_RB_shank_0_contact" geom1="floor" geom2="undesired_RB_shank_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LF_hip_0_contact" geom1="floor" geom2="undesired_LF_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LF_thigh_0_contact" geom1="floor" geom2="undesired_LF_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LF_shank_0_contact" geom1="floor" geom2="undesired_LF_shank_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LM_hip_0_contact" geom1="floor" geom2="undesired_LM_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LM_thigh_0_contact" geom1="floor" geom2="undesired_LM_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LM_shank_0_contact" geom1="floor" geom2="undesired_LM_shank_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LB_hip_0_contact" geom1="floor" geom2="undesired_LB_hip_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LB_thigh_0_contact" geom1="floor" geom2="undesired_LB_thigh_0" data="found" num="1" reduce="mindist" />
+    <contact name="undesired_LB_shank_0_contact" geom1="floor" geom2="undesired_LB_shank_0" data="found" num="1" reduce="mindist" />
+  </sensor>
+  <keyframe>
+    <key name="home" qpos="0 0 0.35 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" ctrl="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+  </keyframe>
+</mujoco>

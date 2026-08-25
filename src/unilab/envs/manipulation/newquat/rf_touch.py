@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any, cast
 
 import numpy as np
@@ -17,15 +18,17 @@ from unilab.envs.common.rotation import np_quat_apply_inverse
 from unilab.envs.locomotion.common import rewards
 from unilab.envs.locomotion.common.base import Sensor
 from unilab.envs.locomotion.common.rewards import RewardContext
-from unilab.envs.locomotion.go2.base import Go2BaseCfg, Go2BaseEnv
+from unilab.envs.locomotion.newquat.base import NewquatBaseCfg, NewquatBaseEnv
 
-FOOT_ORDER: tuple[str, ...] = ("FR", "FL", "RR", "RL")
+NEWQUAT_SCENE = ASSETS_ROOT_PATH / "robots" / "b2" / "scene_flat.xml"
+
+FOOT_ORDER: tuple[str, ...] = ("RF", "LF", "RH", "LH")
 SUPPORT_FOOT_INDICES = np.asarray([1, 2, 3], dtype=np.int32)
 
 
 @dataclass
 class InitState:
-    pos: list[float] = field(default_factory=lambda: [0.0, 0.0, 0.3])
+    pos: list[float] = field(default_factory=lambda: [0.0, 0.0, 0.5])
 
 
 @dataclass
@@ -56,17 +59,17 @@ class RFTouchSensor(Sensor):
     local_linvel = "local_linvel"
     gyro = "gyro"
     upvector = "upvector"
-    feet_pos = ["FR_pos", "FL_pos", "RR_pos", "RL_pos"]
-    feet_force = ["FR_foot_contact", "FL_foot_contact", "RR_foot_contact", "RL_foot_contact"]
-    feet_vel = ["FR_vel", "FL_vel", "RR_vel", "RL_vel"]
+    feet_pos = ["RF_pos", "LF_pos", "RH_pos", "LH_pos"]
+    feet_force = ["RF_foot_contact", "LF_foot_contact", "RH_foot_contact", "LH_foot_contact"]
+    feet_vel = ["RF_vel", "LF_vel", "RH_vel", "LH_vel"]
 
 
 @registry.envcfg("NewquatRFTouch")
 @dataclass
-class NewquatRFTouchCfg(Go2BaseCfg):
+class NewquatRFTouchCfg(NewquatBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "go2" / "scene_flat.xml")
+            model_file=str(NEWQUAT_SCENE),
         )
     )
     max_episode_seconds: float = 10.0
@@ -118,7 +121,7 @@ class NewquatRFTouchDRProvider(DomainRandomizationProvider):
 
 @registry.env("NewquatRFTouch", sim_backend="mujoco")
 @registry.env("NewquatRFTouch", sim_backend="motrix")
-class NewquatRFTouchEnv(Go2BaseEnv):
+class NewquatRFTouchEnv(NewquatBaseEnv):
     _cfg: NewquatRFTouchCfg
 
     def __init__(self, cfg: NewquatRFTouchCfg, num_envs: int = 1, backend_type: str = "mujoco"):
@@ -316,7 +319,12 @@ class NewquatRFTouchEnv(Go2BaseEnv):
         self.feet_force[target, :, :] = 0.0
         for i, sensor_name in enumerate(self._cfg.sensor.feet_force):
             values = self._backend.get_sensor_data(sensor_name)[target]
-            self.feet_force[target, i, 2] = np.ravel(values)
+            values = np.asarray(values, dtype=get_global_dtype())
+            if values.ndim == 2 and values.shape[1] > 1:
+                contact_strength = np.linalg.norm(values, axis=1)
+            else:
+                contact_strength = np.ravel(values)
+            self.feet_force[target, i, 2] = contact_strength
 
     def _reward_base_lin_vel_zero(self, ctx: RewardContext) -> np.ndarray:
         error = np.sum(np.square(ctx.linvel), axis=1)

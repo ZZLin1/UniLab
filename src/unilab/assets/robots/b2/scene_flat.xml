@@ -1,0 +1,58 @@
+<mujoco model="b2 flat scene">
+  <include file="b2.xml" />
+
+  <statistic center="0 0 0.25" extent="1.0" />
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="120" elevation="-20" />
+  </visual>
+
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+  </worldbody>
+
+  <sensor>
+    <gyro site="imu" name="gyro" />
+    <velocimeter site="imu" name="local_linvel" />
+    <framezaxis objtype="site" objname="imu" name="upvector" />
+    <framepos objtype="site" objname="imu" name="global_position" />
+    <framelinvel objtype="site" objname="imu" name="global_linvel" />
+
+    <framepos objtype="geom" objname="FR_foot" name="RF_pos" />
+    <framelinvel objtype="geom" objname="FR_foot" name="RF_vel" />
+    <contact name="RF_foot_contact" geom1="floor" geom2="FR_foot" data="force" num="1" reduce="mindist" />
+
+    <framepos objtype="geom" objname="FL_foot" name="LF_pos" />
+    <framelinvel objtype="geom" objname="FL_foot" name="LF_vel" />
+    <contact name="LF_foot_contact" geom1="floor" geom2="FL_foot" data="force" num="1" reduce="mindist" />
+
+    <framepos objtype="geom" objname="RR_foot" name="RH_pos" />
+    <framelinvel objtype="geom" objname="RR_foot" name="RH_vel" />
+    <contact name="RH_foot_contact" geom1="floor" geom2="RR_foot" data="force" num="1" reduce="mindist" />
+
+    <framepos objtype="geom" objname="RL_foot" name="LH_pos" />
+    <framelinvel objtype="geom" objname="RL_foot" name="LH_vel" />
+    <contact name="LH_foot_contact" geom1="floor" geom2="RL_foot" data="force" num="1" reduce="mindist" />
+  </sensor>
+
+  <keyframe>
+    <!-- <key name="home" qpos="0 0 0.5 1 0 0 0 0 1.28 -2.84 0 1.28 -2.84 0 1.28 -2.84 0 1.28 -2.84"
+      ctrl="0 1.28 -2.84 0 1.28 -2.84 0 1.28 -2.84 0 1.28 -2.84" /> -->
+
+       <key name="home" qpos="0 0 0.65 1 0 0 0 
+       0 0.6 -1. 
+       0 0.6 -1. 
+       0 0.6 -1. 
+       0 0.6 -1."
+      ctrl="0 0 0 0 0 0 0 0 0 0 0 0" />
+  </keyframe>
+</mujoco>

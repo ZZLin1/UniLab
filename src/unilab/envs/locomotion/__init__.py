@@ -8,5 +8,7 @@ __unilab_registry_modules__ = (
     "unilab.envs.locomotion.g1",
     "unilab.envs.locomotion.go2_arm",
     "unilab.envs.locomotion.newhex",
+    "unilab.envs.locomotion.newhex18dof",
     "unilab.envs.locomotion.newquat",
+    "unilab.envs.locomotion.newquat_dualarm",
 )

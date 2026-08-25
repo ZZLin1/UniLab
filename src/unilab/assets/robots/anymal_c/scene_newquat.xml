@@ -1,0 +1,79 @@
+<mujoco model="anymal_c newquat scene">
+  <include file="newquat.xml" />
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0" />
+    <rgba haze="0.15 0.25 0.35 1" />
+    <global azimuth="120" elevation="-20" />
+  </visual>
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072" />
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" markrgb="0.8 0.8 0.8" width="300" height="300" />
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2" />
+  </asset>
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true" />
+    <geom name="floor" size="0 0 0.05" type="plane" material="groundplane" />
+  </worldbody>
+  <sensor>
+    <gyro site="imu" name="gyro" />
+    <velocimeter site="imu" name="local_linvel" />
+    <framezaxis objtype="site" objname="imu" name="upvector" />
+    <framepos objtype="site" objname="imu" name="global_position" />
+    <framelinvel objtype="site" objname="imu" name="global_linvel" />
+    <framepos objtype="geom" objname="LF" name="LF_pos" />
+    <framelinvel objtype="geom" objname="LF" name="LF_vel" />
+    <contact name="LF_foot_contact" geom1="floor" geom2="LF" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="RF" name="RF_pos" />
+    <framelinvel objtype="geom" objname="RF" name="RF_vel" />
+    <contact name="RF_foot_contact" geom1="floor" geom2="RF" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="LH" name="LH_pos" />
+    <framelinvel objtype="geom" objname="LH" name="LH_vel" />
+    <contact name="LH_foot_contact" geom1="floor" geom2="LH" data="force" num="1" reduce="mindist" />
+    <framepos objtype="geom" objname="RH" name="RH_pos" />
+    <framelinvel objtype="geom" objname="RH" name="RH_vel" />
+    <contact name="RH_foot_contact" geom1="floor" geom2="RH" data="force" num="1" reduce="mindist" />
+    <contact name="base_collision_0_contact" geom1="floor" geom2="base_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_1_contact" geom1="floor" geom2="base_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_2_contact" geom1="floor" geom2="base_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_3_contact" geom1="floor" geom2="base_collision_3" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_4_contact" geom1="floor" geom2="base_collision_4" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_5_contact" geom1="floor" geom2="base_collision_5" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_6_contact" geom1="floor" geom2="base_collision_6" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_7_contact" geom1="floor" geom2="base_collision_7" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_8_contact" geom1="floor" geom2="base_collision_8" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_9_contact" geom1="floor" geom2="base_collision_9" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_10_contact" geom1="floor" geom2="base_collision_10" data="found" num="1" reduce="mindist" />
+    <contact name="base_collision_11_contact" geom1="floor" geom2="base_collision_11" data="found" num="1" reduce="mindist" />
+    <contact name="LF_HIP_collision_0_contact" geom1="floor" geom2="LF_HIP_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LF_THIGH_collision_0_contact" geom1="floor" geom2="LF_THIGH_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LF_THIGH_collision_1_contact" geom1="floor" geom2="LF_THIGH_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="LF_THIGH_collision_2_contact" geom1="floor" geom2="LF_THIGH_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="LF_SHANK_collision_0_contact" geom1="floor" geom2="LF_SHANK_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LF_SHANK_collision_1_contact" geom1="floor" geom2="LF_SHANK_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="LF_SHANK_collision_2_contact" geom1="floor" geom2="LF_SHANK_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="RF_HIP_collision_0_contact" geom1="floor" geom2="RF_HIP_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RF_THIGH_collision_0_contact" geom1="floor" geom2="RF_THIGH_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RF_THIGH_collision_1_contact" geom1="floor" geom2="RF_THIGH_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="RF_THIGH_collision_2_contact" geom1="floor" geom2="RF_THIGH_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="RF_SHANK_collision_0_contact" geom1="floor" geom2="RF_SHANK_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RF_SHANK_collision_1_contact" geom1="floor" geom2="RF_SHANK_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="RF_SHANK_collision_2_contact" geom1="floor" geom2="RF_SHANK_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="LH_HIP_collision_0_contact" geom1="floor" geom2="LH_HIP_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LH_THIGH_collision_0_contact" geom1="floor" geom2="LH_THIGH_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LH_THIGH_collision_1_contact" geom1="floor" geom2="LH_THIGH_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="LH_THIGH_collision_2_contact" geom1="floor" geom2="LH_THIGH_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="LH_SHANK_collision_0_contact" geom1="floor" geom2="LH_SHANK_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="LH_SHANK_collision_1_contact" geom1="floor" geom2="LH_SHANK_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="LH_SHANK_collision_2_contact" geom1="floor" geom2="LH_SHANK_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="RH_HIP_collision_0_contact" geom1="floor" geom2="RH_HIP_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RH_THIGH_collision_0_contact" geom1="floor" geom2="RH_THIGH_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RH_THIGH_collision_1_contact" geom1="floor" geom2="RH_THIGH_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="RH_THIGH_collision_2_contact" geom1="floor" geom2="RH_THIGH_collision_2" data="found" num="1" reduce="mindist" />
+    <contact name="RH_SHANK_collision_0_contact" geom1="floor" geom2="RH_SHANK_collision_0" data="found" num="1" reduce="mindist" />
+    <contact name="RH_SHANK_collision_1_contact" geom1="floor" geom2="RH_SHANK_collision_1" data="found" num="1" reduce="mindist" />
+    <contact name="RH_SHANK_collision_2_contact" geom1="floor" geom2="RH_SHANK_collision_2" data="found" num="1" reduce="mindist" />
+  </sensor>
+  <keyframe>
+    <key name="home" qpos="0.0 0.0 0.56 1.0 0.0 0.0 0.0 0.0 0.5235987755982988 -0.7853981 0.0 0.5235987755982988 -0.7853981 0.0 -0.5235987755982988 0.7853981 0.0 -0.5235987755982988 0.7853981" ctrl="0.0 0.5235987755982988 -0.7853981 0.0 0.5235987755982988 -0.7853981 0.0 -0.5235987755982988 0.7853981 0.0 -0.5235987755982988 0.7853981" />
+  </keyframe>
+</mujoco>

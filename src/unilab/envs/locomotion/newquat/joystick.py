@@ -28,12 +28,14 @@ from unilab.envs.locomotion.common.terrain_spawn import (
     TerrainCurriculumCfg,
     TerrainSpawnManager,
 )
-from unilab.envs.locomotion.go2.base import Go2BaseCfg, Go2BaseEnv
+from unilab.envs.locomotion.newquat.base import NewquatBaseCfg, NewquatBaseEnv
+
+NEWQUAT_SCENE = ASSETS_ROOT_PATH / "robots" / "b2" / "scene_flat.xml"
 
 
 @dataclass
 class InitState:
-    pos = [0.0, 0.0, 0.42]
+    pos = [0.0, 0.0, 0.5]
 
 
 @dataclass
@@ -59,17 +61,17 @@ class RewardConfig:
 class JoystickSensor(Sensor):
     local_linvel = "local_linvel"
     gyro = "gyro"
-    feet_pos = ["FL_pos", "FR_pos", "RL_pos", "RR_pos"]
-    feet_force = ["FL_foot_contact", "FR_foot_contact", "RL_foot_contact", "RR_foot_contact"]
-    feet_vel = ["FL_vel", "FR_vel", "RL_vel", "RR_vel"]
+    feet_pos = ["RF_pos", "LF_pos", "RH_pos", "LH_pos"]
+    feet_force = ["RF_foot_contact", "LF_foot_contact", "RH_foot_contact", "LH_foot_contact"]
+    feet_vel = ["RF_vel", "LF_vel", "RH_vel", "LH_vel"]
 
 
 @registry.envcfg("NewquatJoystickFlat")
 @dataclass
-class NewquatJoystickFlatCfg(Go2BaseCfg):
+class NewquatJoystickFlatCfg(NewquatBaseCfg):
     scene: SceneCfg = field(
         default_factory=lambda: SceneCfg(
-            model_file=str(ASSETS_ROOT_PATH / "robots" / "go2" / "scene_flat.xml")
+            model_file=str(NEWQUAT_SCENE),
         )
     )
     max_episode_seconds: float = 20.0
@@ -153,7 +155,7 @@ def _apply_scene_base_height_target(cfg: NewquatJoystickFlatCfg) -> None:
 
 @registry.env("NewquatJoystickFlat", sim_backend="mujoco")
 @registry.env("NewquatJoystickFlat", sim_backend="motrix")
-class NewquatWalkTask(Go2BaseEnv):
+class NewquatWalkTask(NewquatBaseEnv):
     _cfg: NewquatJoystickFlatCfg
 
     def __init__(self, cfg: NewquatJoystickFlatCfg, num_envs=1, backend_type="mujoco"):
